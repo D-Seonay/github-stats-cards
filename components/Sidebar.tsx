@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.1.1-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.2.0-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -74,8 +74,45 @@ export default function Sidebar({ config, setConfig }: any) {
           </div>
         </div>
 
+        <div className="space-y-3">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">04. Card Settings</label>
+          <div className="space-y-2">
+            <button 
+              onClick={() => setConfig({ ...config, compact: !config.compact })}
+              className={`w-full border p-2 text-[10px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.compact ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+            >
+              Compact Mode
+              <span className={config.compact ? 'text-emerald-400' : 'text-zinc-800'}>{config.compact ? '[ON]' : '[OFF]'}</span>
+            </button>
+            
+            <div className="grid grid-cols-1 gap-1 pt-1">
+              {[
+                { id: 'stars', label: 'Hide Stars' },
+                { id: 'commits', label: 'Hide Commits' },
+                { id: 'prs', label: 'Hide PRs' },
+                { id: 'issues', label: 'Hide Issues' },
+                { id: 'contribs', label: 'Hide Contribs' }
+              ].map(s => (
+                <button 
+                  key={s.id}
+                  onClick={() => {
+                    const newHide = config.hide.includes(s.id) 
+                      ? config.hide.filter((h: string) => h !== s.id)
+                      : [...config.hide, s.id];
+                    setConfig({ ...config, hide: newHide });
+                  }}
+                  className={`border px-2 py-1.5 text-[9px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.hide.includes(s.id) ? 'border-red-900/50 text-red-400 bg-red-950/10' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+                >
+                  {s.label}
+                  {config.hide.includes(s.id) && <span className="text-[8px] opacity-50">HIDDEN</span>}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">04. Target Repository</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">05. Target Repository</label>
           <select 
             value={config.repo}
             onChange={(e) => setConfig({ ...config, repo: e.target.value })}

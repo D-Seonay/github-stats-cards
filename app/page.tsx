@@ -9,27 +9,29 @@ export default function Home() {
     username: "D-Seonay",
     theme: "dark",
     locale: "en",
-    repo: ""
+    repo: "",
+    hide: [] as string[],
+    compact: false,
   });
 
   // Debouncing logic to save API calls
-  const [debouncedUsername, setDebouncedUsername] = useState(config.username);
+  const [debouncedConfig, setDebouncedConfig] = useState(config);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setDebouncedUsername(config.username);
+      setDebouncedConfig(config);
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [config.username]);
+  }, [config.username, config.hide, config.compact]);
 
   const baseUrl = ""; 
-  const statsUrl = `${baseUrl}/api/stats?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
-  const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
-  const repoUrl = `${baseUrl}/api/project?username=${debouncedUsername}&repo=${config.repo}&theme=${config.theme}`;
-  const streakUrl = `${baseUrl}/api/streak?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
-  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
-  const activityUrl = `${baseUrl}/api/activity?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
+  const statsUrl = `${baseUrl}/api/stats?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}&compact=${config.compact}&hide=${config.hide.join(",")}`;
+  const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
+  const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${config.repo}&theme=${config.theme}`;
+  const streakUrl = `${baseUrl}/api/streak?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
+  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
+  const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
