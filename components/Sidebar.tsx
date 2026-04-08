@@ -1,6 +1,20 @@
 "use client";
+import { useState, useEffect } from "react";
 
 export default function Sidebar({ config, setConfig }: any) {
+  const [repos, setRepos] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (config.username) {
+      fetch(`/api/github/repos?username=${config.username}`)
+        .then(res => res.json())
+        .then(data => {
+          setRepos(data);
+          if (data.length > 0 && !config.repo) setConfig({ ...config, repo: data[0] });
+        });
+    }
+  }, [config.username]);
+
   return (
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
@@ -33,6 +47,17 @@ export default function Sidebar({ config, setConfig }: any) {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">03. Target Repository</label>
+          <select 
+            value={config.repo}
+            onChange={(e) => setConfig({ ...config, repo: e.target.value })}
+            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all"
+          >
+            {repos.map(r => <option key={r} value={r}>{r}</option>)}
+          </select>
         </div>
       </div>
     </aside>

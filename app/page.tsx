@@ -14,6 +14,7 @@ export default function Home() {
   const baseUrl = ""; // Local paths work relative to root
   const statsUrl = `${baseUrl}/api/stats?username=${config.username}&theme=${config.theme}&locale=${config.locale}`;
   const langsUrl = `${baseUrl}/api/top-langs?username=${config.username}&theme=${config.theme}&locale=${config.locale}`;
+  const repoUrl = `${baseUrl}/api/project?username=${config.username}&repo=${config.repo}&theme=${config.theme}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
@@ -21,6 +22,7 @@ export default function Home() {
       <main className="flex-1 p-12 overflow-y-auto space-y-12">
         <PreviewCard title="01. User Statistics" src={statsUrl} />
         <PreviewCard title="02. Top Languages" src={langsUrl} />
+        {config.repo && <PreviewCard title="03. Project Card" src={repoUrl} />}
       </main>
     </div>
   );
