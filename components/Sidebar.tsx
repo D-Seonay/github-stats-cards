@@ -60,6 +60,15 @@ export default function Sidebar({ config, setConfig }: any) {
           </select>
         </div>
       </div>
+
+      <div className="mt-auto pt-6 border-t border-zinc-900">
+        <button 
+          onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
+          className="w-full bg-zinc-100 text-zinc-950 p-3 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all italic"
+        >
+          // Open Visual Library
+        </button>
+      </div>
     </aside>
   );
 }

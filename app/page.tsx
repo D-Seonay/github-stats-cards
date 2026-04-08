@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import PreviewCard from "@/components/PreviewCard";
+import ThemeGallery from "@/components/ThemeGallery";
 
 export default function Home() {
   const [config, setConfig] = useState({
@@ -27,6 +28,7 @@ export default function Home() {
         <PreviewCard title="03. Contribution Streak" src={streakUrl} />
         <PreviewCard title="04. Top Repositories" src={topReposUrl} />
         {config.repo && <PreviewCard title="05. Project Card" src={repoUrl} />}
+        <ThemeGallery config={config} setConfig={setConfig} />
       </main>
     </div>
   );
