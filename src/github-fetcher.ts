@@ -141,25 +141,38 @@ export async function fetchTopRepos(username: string): Promise<TopRepoData[]> {
 }
 
 export async function fetchStreak(username: string): Promise<StreakData> {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const lastYear = currentYear - 1;
+
   const query = `
-    query streakInfo($login: String!) {
+    query streakInfo($login: String!, $from1: DateTime!, $to1: DateTime!, $from2: DateTime!, $to2: DateTime!) {
       user(login: $login) {
         name
         login
-        contributionsCollection {
+        c1: contributionsCollection(from: $from1, to: $to1) {
           contributionCalendar {
             totalContributions
-            weeks {
-              contributionDays {
-                contributionCount
-                date
-              }
-            }
+            weeks { contributionDays { contributionCount date } }
+          }
+        }
+        c2: contributionsCollection(from: $from2, to: $to2) {
+          contributionCalendar {
+            totalContributions
+            weeks { contributionDays { contributionCount date } }
           }
         }
       }
     }
   `;
+
+  const variables = {
+    login: username,
+    from1: `${currentYear}-01-01T00:00:00Z`,
+    to1: now.toISOString(),
+    from2: `${lastYear}-01-01T00:00:00Z`,
+    to2: `${lastYear}-12-31T23:59:59Z`,
+  };
 
   const response = await githubFetch(GITHUB_GRAPHQL_URL, {
     method: "POST",
@@ -167,7 +180,7 @@ export async function fetchStreak(username: string): Promise<StreakData> {
       Authorization: `bearer ${process.env.GH_TOKEN}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query, variables: { login: username } }),
+    body: JSON.stringify({ query, variables }),
   });
 
   const body = await response.json() as any;
@@ -181,38 +194,57 @@ export async function fetchStreak(username: string): Promise<StreakData> {
   const user = body.data.user;
   if (!user) throw new Error("User not found");
 
-  const calendar = user.contributionsCollection.contributionCalendar;
-  const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
-  const sortedDays = [...days].sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const days1 = user.c1.contributionCalendar.weeks.flatMap((w: any) => w.contributionDays);
+  const days2 = user.c2.contributionCalendar.weeks.flatMap((w: any) => w.contributionDays);
   
-  let currentStreak = 0;
-  let longestStreak = 0;
-  let tempStreak = 0;
+  // Combine all days and sort descending
+  const allDays = [...days1, ...days2].sort((a: any, b: any) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
+
+  // Remove potential duplicates at year boundary
+  const uniqueDays = Array.from(new Map(allDays.map(d => [d.date, d])).values());
 
   const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
-  let startIndex = sortedDays.findIndex(d => d.date === today || d.date === yesterday);
-  if (startIndex === -1) startIndex = 0;
-  if (sortedDays[startIndex].contributionCount === 0 && sortedDays[startIndex].date === today) startIndex++;
-
-  for (let i = startIndex; i < sortedDays.length; i++) {
-    if (sortedDays[i].contributionCount > 0) currentStreak++; else break;
+  // 1. Current Streak calculation with grace period
+  let currentStreak = 0;
+  let foundStart = false;
+  for (const day of uniqueDays) {
+    if (day.contributionCount > 0) {
+      currentStreak++;
+      foundStart = true;
+    } else {
+      // If we haven't found a single contribution yet, 
+      // check if we are still within the "today/yesterday" grace period
+      if (!foundStart) {
+        if (day.date < yesterday) break; // Streak broken if yesterday was 0
+      } else {
+        // We already have a streak, and we just hit a 0. Streak is over.
+        break;
+      }
+    }
   }
 
-  const chronologicalDays = [...days].sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  for (const day of chronologicalDays) {
+  // 2. Longest Streak calculation (chronological)
+  const chronoDays = [...uniqueDays].reverse();
+  let longestStreak = 0;
+  let tempStreak = 0;
+  for (const day of chronoDays) {
     if (day.contributionCount > 0) {
       tempStreak++;
       if (tempStreak > longestStreak) longestStreak = tempStreak;
-    } else tempStreak = 0;
+    } else {
+      tempStreak = 0;
+    }
   }
 
   return {
     name: user.name || user.login,
     currentStreak,
     longestStreak,
-    totalContributions: calendar.totalContributions,
+    totalContributions: user.c1.contributionCalendar.totalContributions + user.c2.contributionCalendar.totalContributions,
   };
 }
 
