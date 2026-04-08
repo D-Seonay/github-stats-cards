@@ -184,41 +184,40 @@ export async function fetchStreak(username: string): Promise<StreakData> {
   const calendar = user.contributionsCollection.contributionCalendar;
   const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
   
-  // Sort days by date descending for current streak
-  const sortedDays = [...days].sort((a: any, b: any) => 
-    new Date(b.date).getTime() - new Date(a.date).getTime()
-  );
+  // Count backwards from today
+  const todayStr = new Date().toISOString().split('T')[0];
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
 
-  const today = new Date().toISOString().split('T')[0];
-  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+  const sortedPastDays = days
+    .filter((d: any) => d.date <= todayStr)
+    .sort((a: any, b: any) => b.date.localeCompare(a.date));
 
   let currentStreak = 0;
-  let foundStart = false;
-
-  for (const day of sortedDays) {
-    if (day.contributionCount > 0) {
-      currentStreak++;
-      foundStart = true;
-    } else {
-      if (!foundStart) {
-        // If we are at "today" or "tomorrow" (UTC), we continue to check yesterday
-        if (day.date > yesterday) continue;
-        // If we reach yesterday and it's 0, streak is broken
-        break;
-      } else {
-        // Streak started but we hit a gap
-        break;
+  
+  // Find where the streak starts: either today or yesterday must have contributions
+  const latestContributionIndex = sortedPastDays.findIndex(d => d.contributionCount > 0);
+  
+  if (latestContributionIndex !== -1) {
+    const latestDate = sortedPastDays[latestContributionIndex].date;
+    // If the latest contribution is today or yesterday, the streak is alive
+    if (latestDate === todayStr || latestDate === yesterdayStr) {
+      for (let i = latestContributionIndex; i < sortedPastDays.length; i++) {
+        if (sortedPastDays[i].contributionCount > 0) {
+          currentStreak++;
+        } else {
+          break;
+        }
       }
     }
   }
 
-  // Longest Streak calculation (ascending)
-  const chronoDays = [...days].sort((a: any, b: any) => 
-    new Date(a.date).getTime() - new Date(b.date).getTime()
-  );
+  // Longest Streak calculation (chronological)
+  const chronologicalDays = [...days].sort((a: any, b: any) => a.date.localeCompare(b.date));
   let longestStreak = 0;
   let tempStreak = 0;
-  for (const day of chronoDays) {
+  for (const day of chronologicalDays) {
     if (day.contributionCount > 0) {
       tempStreak++;
       if (tempStreak > longestStreak) longestStreak = tempStreak;
