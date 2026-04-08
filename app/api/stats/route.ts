@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
   const hide = searchParams.get("hide")?.split(",") || [];
   const compact = searchParams.get("compact") === "true";
   const custom_css = searchParams.get("custom_css") || undefined;
+  const font = searchParams.get("font") || undefined;
 
   const themeObj = getTheme(theme || "light", bg_color || undefined);
 
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
   try {
     const data = await fetchStats(username);
     const translations = getTranslations(locale || "en");
-    const svg = generateStatsSVG(data, themeObj, translations, hide, compact, custom_css);
+    const svg = generateStatsSVG(data, themeObj, translations, hide, compact, custom_css, font);
 
     return new NextResponse(svg, {
       status: 200,

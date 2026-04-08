@@ -21,6 +21,20 @@ const RANK_COLORS = {
   DIAMOND: "#b9f2ff",
 };
 
+function getFontStyles(font?: string) {
+  if (!font) {
+    return {
+      import: "",
+      family: "'Segoe UI', Ubuntu, Sans-Serif",
+    };
+  }
+  const fontName = font.replace(/\+/g, " ");
+  return {
+    import: `@import url('https://fonts.googleapis.com/css2?family=${font.replace(/ /g, "+")}&display=swap');`,
+    family: `'${fontName}', Sans-Serif`,
+  };
+}
+
 function getTerminalOverlay(theme: Theme): string {
   if (theme.bg_color === "000000" && theme.title_color === "00ff00") {
     return `
@@ -35,8 +49,9 @@ function getTerminalOverlay(theme: Theme): string {
   return "";
 }
 
-export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: string): string {
+export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: string, font?: string): string {
   const { title_color, bg_color, text_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   const trophyIcons = trophies.map((t, index) => {
     const x = (index % 3) * 150;
@@ -57,9 +72,11 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; }
         .small { font-size: 10px; opacity: 0.7; }
         .bold { font-weight: 700; }
         ${customCSS || ""}
@@ -74,15 +91,18 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
   `);
 }
 
-export function generateRateLimitSVG(theme: Theme, customCSS?: string): string {
+export function generateRateLimitSVG(theme: Theme, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
@@ -100,8 +120,9 @@ export function generateRateLimitSVG(theme: Theme, customCSS?: string): string {
   `);
 }
 
-export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations, customCSS?: string): string {
+export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   const rows = data.map((activity, index) => {
     const y = index * 25;
@@ -117,9 +138,11 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         .small { font-size: 12px; opacity: 0.6; }
         .bold { font-weight: 700; fill: #${title_color}; }
         ${customCSS || ""}
@@ -135,8 +158,9 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
   `);
 }
 
-export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations, customCSS?: string): string {
+export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   const rows = data.map((repo, index) => {
     const y = index * 25;
@@ -157,9 +181,11 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         .small { font-size: 12px; opacity: 0.8; }
         .bold { font-weight: 700; }
         ${customCSS || ""}
@@ -175,17 +201,20 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
   `);
 }
 
-export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations, customCSS?: string): string {
+export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
-        .bold { font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .label { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; opacity: 0.8; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
+        .bold { font-weight: 700; font-size: 24px; fill: #${title_color}; }
+        .label { font-weight: 400; font-size: 12px; fill: #${text_color}; opacity: 0.8; }
         ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
@@ -210,9 +239,10 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
   `);
 }
 
-export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations, hide: string[] = [], compact: boolean = false, customCSS?: string): string {
+export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations, hide: string[] = [], compact: boolean = false, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
   const title = translations.statsTitle.replace("{name}", data.name);
+  const fontStyles = getFontStyles(font);
 
   const stats = [
     { key: "stars", label: translations.totalStars, value: data.totalStars },
@@ -237,9 +267,11 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   return minifySVG(`
     <svg width="495" height="${height}" viewBox="0 0 495 ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         .bold { font-weight: 700; }
         ${customCSS || ""}
       </style>
@@ -254,9 +286,10 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   `);
 }
 
-export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations, customCSS?: string): string {
+export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
   const totalSize = data.reduce((acc, lang) => acc + lang.size, 0);
+  const fontStyles = getFontStyles(font);
 
   let currentX = 0;
   const barWidth = 445;
@@ -282,9 +315,11 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         .bold { font-weight: 700; }
         ${customCSS || ""}
       </style>
@@ -308,16 +343,19 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   `);
 }
 
-export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: string): string {
+export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   return minifySVG(`
     <svg width="400" height="150" viewBox="0 0 400 150" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .description { font: 400 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
-        .stat { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .description { font-weight: 400; font-size: 13px; fill: #${text_color}; }
+        .stat { font-weight: 400; font-size: 12px; fill: #${text_color}; }
         ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="399" height="149" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
@@ -341,15 +379,18 @@ export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: 
   `);
 }
 
-export function generateOrgStatsSVG(data: OrgData, theme: Theme, customCSS?: string): string {
+export function generateOrgStatsSVG(data: OrgData, theme: Theme, customCSS?: string, font?: string): string {
   const { title_color, text_color, bg_color } = theme;
+  const fontStyles = getFontStyles(font);
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
+        ${fontStyles.import}
         ${COMMON_STYLES}
-        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
-        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        * { font-family: ${fontStyles.family}; }
+        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
+        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
         .bold { font-weight: 700; }
         ${customCSS || ""}
       </style>

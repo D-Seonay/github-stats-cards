@@ -60,6 +60,7 @@ Configure, preview, and export your cards in real-time using our dedicated "Stea
 | `theme` | Visual palette selection. | `&theme=nord` |
 | `locale` | Language selection. | `&locale=fr` |
 | `bg_color` | Custom hex background color. | `&bg_color=000000` |
+| `font` | Google Font name. | `&font=Roboto` |
 | `repo` | Repository name (for `/repo` only). | `&repo=github-stats-cards` |
 
 ---
