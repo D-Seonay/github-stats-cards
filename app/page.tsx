@@ -14,6 +14,29 @@ export default function Home() {
     compact: false,
   });
 
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Load from LocalStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem("stat-stats-config");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setConfig(parsed);
+      } catch (e) {
+        console.error("Error loading config", e);
+      }
+    }
+    setIsLoaded(true);
+  }, []);
+
+  // Save to LocalStorage on change
+  useEffect(() => {
+    if (isLoaded) {
+      localStorage.setItem("stat-stats-config", JSON.stringify(config));
+    }
+  }, [config, isLoaded]);
+
   // Debouncing logic to save API calls
   const [debouncedConfig, setDebouncedConfig] = useState(config);
 
