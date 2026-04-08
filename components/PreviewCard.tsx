@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Copy, Share2 } from "lucide-react";
+import { Check, Copy, Share2, FileCode } from "lucide-react";
 
 export default function PreviewCard({ title, src }: { title: string, src: string }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,6 +15,18 @@ export default function PreviewCard({ title, src }: { title: string, src: string
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copySvgToClipboard = async () => {
+    try {
+      const response = await fetch(src);
+      const svgCode = await response.text();
+      await navigator.clipboard.writeText(svgCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy SVG", err);
+    }
   };
 
   const shareOnTwitter = () => {
@@ -89,6 +101,13 @@ export default function PreviewCard({ title, src }: { title: string, src: string
           >
             <Copy size={12} />
             Link
+          </button>
+          <button 
+            onClick={copySvgToClipboard} 
+            className="border border-zinc-100 text-zinc-100 px-3 py-1.5 text-[10px] font-bold uppercase hover:bg-zinc-800 transition-colors flex items-center gap-2"
+          >
+            <FileCode size={12} />
+            SVG
           </button>
           <button 
             onClick={shareOnTwitter} 
