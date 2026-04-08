@@ -21,6 +21,20 @@ const RANK_COLORS = {
   DIAMOND: "#b9f2ff",
 };
 
+function getTerminalOverlay(theme: Theme): string {
+  if (theme.bg_color === "000000" && theme.title_color === "00ff00") {
+    return `
+      <defs>
+        <pattern id="scanline" width="495" height="4" patternUnits="userSpaceOnUse">
+          <rect width="495" height="2" fill="#00ff00" fill-opacity="0.05" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#scanline)" pointer-events="none" />
+    `;
+  }
+  return "";
+}
+
 export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
   const { title_color, bg_color, text_color } = theme;
 
@@ -54,6 +68,7 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
       <g transform="translate(25, 65)">
         ${trophyIcons}
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -78,6 +93,7 @@ export function generateRateLimitSVG(theme: Theme): string {
           Please try again in a few minutes.
         </text>
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -111,6 +127,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
       <g transform="translate(25, 70)">
         ${rows}
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -149,6 +166,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
       <g transform="translate(25, 70)">
         ${rows}
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -182,6 +200,7 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
           <text x="0" y="20" class="label">${translations.totalContributions}</text>
         </g>
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -204,7 +223,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   const rows = stats.map((stat, index) => {
     const y = index * rowHeight;
     return `
-      <text x="0" y="${y}" class="stat animate" style="animation-delay: ${300 + index * 100}ms">
+      <text x="0" y="${y}" class="stat animate">
         ${stat.label} <tspan x="180" class="bold">${stat.value}</tspan>
       </text>
     `;
@@ -224,6 +243,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
       <g transform="translate(25, 65)">
         ${rows}
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -245,9 +265,8 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   const legend = data.map((lang, index) => {
     const percentage = ((lang.size / totalSize) * 100).toFixed(1);
     const y = index * 20;
-    const delay = 450 + (index * 100);
     return `
-      <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
+      <g transform="translate(0, ${y})" class="animate">
         <circle cx="5" cy="5" r="5" fill="${lang.color}"/>
         <text x="20" y="10" class="stat">${lang.name} <tspan class="bold">${percentage}%</tspan></text>
       </g>
@@ -265,7 +284,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.topLangsTitle}</text>
       
-      <g transform="translate(25, 55)" class="animate" style="animation-delay: 300ms">
+      <g transform="translate(25, 55)" class="animate">
         <mask id="bar-mask">
           <rect width="${barWidth}" height="${barHeight}" rx="4"/>
         </mask>
@@ -277,6 +296,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
       <g transform="translate(25, 80)">
         ${legend}
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
@@ -308,6 +328,7 @@ export function generateProjectSVG(data: ProjectData, theme: Theme): string {
           <text x="0" y="10" class="stat">🍴 ${data.forks}</text>
         </g>
       </g>
+      ${getTerminalOverlay(theme)}
     </svg>
   `);
 }

@@ -48,6 +48,12 @@ export const themes: Record<string, Theme> = {
     text_color: "839496",
     icon_color: "b58900",
   },
+  terminal: {
+    bg_color: "000000",
+    title_color: "00ff00",
+    text_color: "00dd00",
+    icon_color: "00ff00",
+  },
 };
 
 export function getTheme(themeName: string = "light", customBg?: string): Theme {
