@@ -1,6 +1,7 @@
 import { fetchStreak } from "@/src/github-fetcher";
 import { generateStreakSVG, generateErrorSVG } from "@/src/svg-generator";
 import { getTheme } from "@/src/themes";
+import { getTranslations } from "@/src/locales";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -8,6 +9,7 @@ export async function GET(request: NextRequest) {
   const username = searchParams.get("username");
   const theme = searchParams.get("theme");
   const bg_color = searchParams.get("bg_color");
+  const locale = searchParams.get("locale");
 
   if (!username) {
     return new NextResponse(generateErrorSVG("Username is required"), {
@@ -19,7 +21,8 @@ export async function GET(request: NextRequest) {
   try {
     const data = await fetchStreak(username);
     const themeObj = getTheme(theme || "light", bg_color || undefined);
-    const svg = generateStreakSVG(data, themeObj);
+    const translations = getTranslations(locale || "en");
+    const svg = generateStreakSVG(data, themeObj, translations);
 
     return new NextResponse(svg, {
       status: 200,

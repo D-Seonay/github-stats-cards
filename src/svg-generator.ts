@@ -2,7 +2,7 @@ import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRep
 import { Theme } from "./themes";
 import { Translations } from "./locales";
 
-export function generateActivitySVG(data: ActivityData[], theme: Theme): string {
+export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
 
   const rows = data.map((activity, index) => {
@@ -25,7 +25,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme): string 
         .bold { font-weight: 700; fill: #${title_color}; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header">Recent Activity</text>
+      <text x="25" y="35" class="header">${translations.recentActivityTitle}</text>
       
       <g transform="translate(25, 70)">
         ${rows}
@@ -34,7 +34,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme): string 
   `;
 }
 
-export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
+export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
 
   const rows = data.map((repo, index) => {
@@ -62,7 +62,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
         .bold { font-weight: 700; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header">Top Repositories</text>
+      <text x="25" y="35" class="header">${translations.topReposTitle}</text>
       
       <g transform="translate(25, 70)">
         ${rows}
@@ -71,7 +71,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
   `;
 }
 
-export function generateStreakSVG(data: StreakData, theme: Theme): string {
+export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
 
   return `
@@ -83,20 +83,20 @@ export function generateStreakSVG(data: StreakData, theme: Theme): string {
         .label { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; opacity: 0.8; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header">Contribution Streak</text>
+      <text x="25" y="35" class="header">${translations.streakTitle}</text>
       
       <g transform="translate(25, 80)">
         <g transform="translate(0, 0)">
           <text x="0" y="0" class="bold">${data.currentStreak}</text>
-          <text x="0" y="20" class="label">Current Streak</text>
+          <text x="0" y="20" class="label">${translations.currentStreak}</text>
         </g>
         <g transform="translate(160, 0)">
           <text x="0" y="0" class="bold">${data.longestStreak}</text>
-          <text x="0" y="20" class="label">Longest Streak</text>
+          <text x="0" y="20" class="label">${translations.longestStreak}</text>
         </g>
         <g transform="translate(320, 0)">
           <text x="0" y="0" class="bold">${data.totalContributions}</text>
-          <text x="0" y="20" class="label">Total Contributions</text>
+          <text x="0" y="20" class="label">${translations.totalContributions}</text>
         </g>
       </g>
     </svg>

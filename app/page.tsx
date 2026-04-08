@@ -27,9 +27,9 @@ export default function Home() {
   const statsUrl = `${baseUrl}/api/stats?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
   const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
   const repoUrl = `${baseUrl}/api/project?username=${debouncedUsername}&repo=${config.repo}&theme=${config.theme}`;
-  const streakUrl = `${baseUrl}/api/streak?username=${debouncedUsername}&theme=${config.theme}`;
-  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedUsername}&theme=${config.theme}`;
-  const activityUrl = `${baseUrl}/api/activity?username=${debouncedUsername}&theme=${config.theme}`;
+  const streakUrl = `${baseUrl}/api/streak?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
+  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
+  const activityUrl = `${baseUrl}/api/activity?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">

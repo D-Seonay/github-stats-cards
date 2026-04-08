@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v1.7.0-alpha.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v1.8.0-alpha.stealth</p>
       </div>
 
       <div className="space-y-6">
