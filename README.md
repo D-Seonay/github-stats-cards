@@ -2,6 +2,21 @@
 
 A high-performance, serverless API to generate dynamic GitHub statistics cards for your profile README.
 
+## 🖼️ Previews
+
+Here is how the cards look with different themes:
+
+### Global Stats (Dracula Theme)
+![Stats Preview](https://github-stats-cards-example.vercel.app/stats?username=D-Seonay&theme=dracula)
+
+### Top Languages (GitHub Dark Theme)
+![Top Langs Preview](https://github-stats-cards-example.vercel.app/top-langs?username=D-Seonay&theme=github_dark)
+
+### Project Card (Default Theme)
+![Project Preview](https://github-stats-cards-example.vercel.app/repo?username=D-Seonay&repo=github-stats-cards)
+
+> **Note:** Replace `github-stats-cards-example.vercel.app` with your own Vercel deployment URL.
+
 ## 🚀 Features
 
 - **Global Stats:** Show stars, commits, PRs, and more.
