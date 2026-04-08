@@ -1,0 +1,40 @@
+"use client";
+
+export default function Sidebar({ config, setConfig }: any) {
+  return (
+    <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
+      <div className="space-y-1">
+        <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
+        <p className="text-[10px] text-zinc-500 italic">// v1.0.0-alpha.stealth</p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">01. Target User</label>
+          <input 
+            type="text" 
+            value={config.username}
+            onChange={(e) => setConfig({ ...config, username: e.target.value })}
+            placeholder="GitHub Username" 
+            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700" 
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">02. Visual Theme</label>
+          <div className="grid grid-cols-2 gap-2">
+            {['dark', 'matrix', 'silver', 'high-contrast'].map(t => (
+              <button 
+                key={t}
+                onClick={() => setConfig({ ...config, theme: t })}
+                className={`border p-2 text-[10px] uppercase font-bold transition-all ${config.theme === t ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+              >
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
