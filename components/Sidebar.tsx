@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.1.0-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.1.1-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -86,7 +86,24 @@ export default function Sidebar({ config, setConfig }: any) {
         </div>
       </div>
 
-      <div className="mt-auto pt-6 border-t border-zinc-900">
+      <div className="mt-auto pt-6 space-y-4 border-t border-zinc-900">
+        <div className="grid grid-cols-2 gap-2">
+          <a 
+            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=bug&template=bug_report.md" 
+            target="_blank"
+            className="border border-zinc-800 p-2 text-[8px] uppercase font-bold text-zinc-500 hover:text-red-400 hover:border-red-900/50 transition-all text-center"
+          >
+            // Report Bug
+          </a>
+          <a 
+            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=enhancement&template=feature_request.md" 
+            target="_blank"
+            className="border border-zinc-800 p-2 text-[8px] uppercase font-bold text-zinc-500 hover:text-emerald-400 hover:border-emerald-900/50 transition-all text-center"
+          >
+            // Suggest Idea
+          </a>
+        </div>
+        
         <button 
           onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
           className="w-full bg-zinc-100 text-zinc-950 p-3 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all italic"
