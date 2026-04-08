@@ -250,6 +250,9 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
     { key: "prs", label: translations.totalPRs, value: data.totalPRs },
     { key: "issues", label: translations.totalIssues, value: data.totalIssues },
     { key: "contribs", label: translations.contributedTo, value: data.contributedTo },
+    { key: "followers", label: translations.followers, value: data.followers },
+    { key: "gists", label: translations.gists, value: data.gists },
+    { key: "discussions", label: translations.discussions, value: data.discussions },
   ].filter(s => !hide.includes(s.key));
 
   const height = compact ? Math.max(100, 45 + stats.length * 25) : 195;
@@ -258,7 +261,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   const rows = stats.map((stat, index) => {
     const y = index * rowHeight;
     return `
-      <text x="0" y="${y}" class="stat animate">
+      <text x="0" y="${y}" class="stat animate" style="animation-delay: ${300 + index * 100}ms">
         ${stat.label} <tspan x="180" class="bold">${stat.value}</tspan>
       </text>
     `;
@@ -304,8 +307,9 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   const legend = data.map((lang, index) => {
     const percentage = ((lang.size / totalSize) * 100).toFixed(1);
     const y = index * 20;
+    const delay = 450 + (index * 100);
     return `
-      <g transform="translate(0, ${y})" class="animate">
+      <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
         <circle cx="5" cy="5" r="5" fill="${lang.color}"/>
         <text x="20" y="10" class="stat">${lang.name} <tspan class="bold">${percentage}%</tspan></text>
       </g>
@@ -326,7 +330,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.topLangsTitle}</text>
       
-      <g transform="translate(25, 55)" class="animate">
+      <g transform="translate(25, 55)" class="animate" style="animation-delay: 300ms">
         <mask id="bar-mask">
           <rect width="${barWidth}" height="${barHeight}" rx="4"/>
         </mask>

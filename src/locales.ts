@@ -5,6 +5,9 @@ export interface Translations {
   totalPRs: string;
   totalIssues: string;
   contributedTo: string;
+  followers: string;
+  gists: string;
+  discussions: string;
   topLangsTitle: string;
   streakTitle: string;
   currentStreak: string;
@@ -22,6 +25,9 @@ export const locales: Record<string, Translations> = {
     totalPRs: "Total PRs:",
     totalIssues: "Total Issues:",
     contributedTo: "Contributed to:",
+    followers: "Followers:",
+    gists: "Public Gists:",
+    discussions: "Discussions:",
     topLangsTitle: "Most Used Languages",
     streakTitle: "Contribution Streak",
     currentStreak: "Current Streak",
@@ -37,6 +43,9 @@ export const locales: Record<string, Translations> = {
     totalPRs: "Total de Pull Requests :",
     totalIssues: "Total d'Issues :",
     contributedTo: "Dépôts contribués :",
+    followers: "Abonnés :",
+    gists: "Gists publics :",
+    discussions: "Discussions :",
     topLangsTitle: "Langages les plus utilisés",
     streakTitle: "Série de contributions",
     currentStreak: "Série actuelle",
@@ -52,6 +61,9 @@ export const locales: Record<string, Translations> = {
     totalPRs: "PRs totales:",
     totalIssues: "Issues totales:",
     contributedTo: "Contribuyó a:",
+    followers: "Seguidores:",
+    gists: "Gists públicos:",
+    discussions: "Discusiones:",
     topLangsTitle: "Lenguajes más usados",
     streakTitle: "Racha de contribuciones",
     currentStreak: "Racha actual",
@@ -67,6 +79,9 @@ export const locales: Record<string, Translations> = {
     totalPRs: "PRs insgesamt:",
     totalIssues: "Issues insgesamt:",
     contributedTo: "Mitgewirkt an:",
+    followers: "Follower:",
+    gists: "Öffentliche Gists:",
+    discussions: "Diskussionen:",
     topLangsTitle: "Meistgenutzte Sprachen",
     streakTitle: "Beitragsserie",
     currentStreak: "Aktuelle Serie",
@@ -82,6 +97,9 @@ export const locales: Record<string, Translations> = {
     totalPRs: "PR 合計:",
     totalIssues: "Issue 合計:",
     contributedTo: "貢献したリポジトリ:",
+    followers: "フォロワー:",
+    gists: "公開 Gist:",
+    discussions: "ディスカッション:",
     topLangsTitle: "主な使用言語",
     streakTitle: "コントリビューションの継続数",
     currentStreak: "現在の継続数",

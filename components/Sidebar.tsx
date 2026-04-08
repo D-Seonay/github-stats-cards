@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono overflow-y-auto scrollbar-hide">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.7.0-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.8.0-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -91,7 +91,10 @@ export default function Sidebar({ config, setConfig }: any) {
                 { id: 'commits', label: 'Hide Commits' },
                 { id: 'prs', label: 'Hide PRs' },
                 { id: 'issues', label: 'Hide Issues' },
-                { id: 'contribs', label: 'Hide Contribs' }
+                { id: 'contribs', label: 'Hide Contribs' },
+                { id: 'followers', label: 'Hide Followers' },
+                { id: 'gists', label: 'Hide Gists' },
+                { id: 'discussions', label: 'Hide Discussions' }
               ].map(s => (
                 <button 
                   key={s.id}
