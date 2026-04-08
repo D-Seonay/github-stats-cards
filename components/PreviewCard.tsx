@@ -1,7 +1,14 @@
 "use client";
-import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PreviewCard({ title, src }: { title: string, src: string }) {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+  }, [src]);
+
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
     alert("Copied to clipboard");
@@ -12,18 +19,44 @@ export default function PreviewCard({ title, src }: { title: string, src: string
       <div className="flex justify-between items-end border-b border-zinc-900 pb-2">
         <h2 className="text-[10px] uppercase tracking-[0.3em] font-black italic text-zinc-400">{title}</h2>
       </div>
-      <motion.div 
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-        className="w-full bg-zinc-900/30 border border-dashed border-zinc-800 flex items-center justify-center relative group min-h-[200px]"
-      >
-        <img src={src} alt={title} className="max-w-full h-auto shadow-2xl" />
-        <div className="absolute inset-0 bg-zinc-950/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-2 p-4">
+      
+      <div className="w-full bg-zinc-900/30 border border-dashed border-zinc-800 flex items-center justify-center relative group min-h-[200px] overflow-hidden">
+        
+        {/* Skeleton / Phantom Card */}
+        <AnimatePresence>
+          {isLoading && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-10 p-6 flex flex-col gap-4 bg-zinc-950"
+            >
+              <div className="h-4 w-1/3 bg-zinc-800 animate-pulse rounded" />
+              <div className="space-y-3">
+                <div className="h-2 w-full bg-zinc-900 animate-pulse rounded opacity-50" />
+                <div className="h-2 w-5/6 bg-zinc-900 animate-pulse rounded opacity-50" />
+                <div className="h-2 w-4/6 bg-zinc-900 animate-pulse rounded opacity-50" />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.img 
+          key={src}
+          src={src} 
+          alt={title} 
+          onLoad={() => setIsLoading(false)}
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: isLoading ? 0 : 1, scale: isLoading ? 0.98 : 1 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-full h-auto shadow-2xl z-0" 
+        />
+
+        <div className="absolute inset-0 bg-zinc-950/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-2 p-4 z-20">
           <button onClick={() => copyToClipboard(`![${title}](${window.location.origin}${src})`)} className="bg-zinc-100 text-zinc-950 px-3 py-1.5 text-[10px] font-bold uppercase hover:bg-white transition-colors">Markdown</button>
           <button onClick={() => copyToClipboard(`${window.location.origin}${src}`)} className="border border-zinc-100 text-zinc-100 px-3 py-1.5 text-[10px] font-bold uppercase hover:bg-zinc-800 transition-colors">Link</button>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
