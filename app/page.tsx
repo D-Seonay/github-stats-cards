@@ -13,6 +13,7 @@ export default function Home() {
     hide: [] as string[],
     compact: false,
     customCSS: "",
+    org: "google",
   });
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -47,7 +48,7 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [config.username, config.hide, config.compact, config.customCSS]);
+  }, [config.username, config.hide, config.compact, config.customCSS, config.org]);
 
   const baseUrl = ""; 
   const cssParam = config.customCSS ? `&custom_css=${encodeURIComponent(config.customCSS)}` : "";
@@ -59,6 +60,7 @@ export default function Home() {
   const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
   const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
   const trophiesUrl = `${baseUrl}/api/trophies?username=${debouncedConfig.username}&theme=${config.theme}${cssParam}`;
+  const orgUrl = `${baseUrl}/api/org?username=${debouncedConfig.org}&theme=${config.theme}${cssParam}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
@@ -70,7 +72,8 @@ export default function Home() {
         <PreviewCard title="04. Top Repositories" src={topReposUrl} />
         <PreviewCard title="05. Recent Activity" src={activityUrl} />
         <PreviewCard title="06. Achievement Trophies" src={trophiesUrl} />
-        {config.repo && <PreviewCard title="07. Project Card" src={repoUrl} />}
+        <PreviewCard title="07. Organization Stats" src={orgUrl} />
+        {config.repo && <PreviewCard title="08. Project Card" src={repoUrl} />}
         <ThemeGallery config={config} setConfig={setConfig} />
       </main>
     </div>

@@ -341,6 +341,39 @@ export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: 
   `);
 }
 
+export function generateOrgStatsSVG(data: OrgData, theme: Theme, customCSS?: string): string {
+  const { title_color, text_color, bg_color } = theme;
+
+  return minifySVG(`
+    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        ${COMMON_STYLES}
+        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        .bold { font-weight: 700; }
+        ${customCSS || ""}
+      </style>
+      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      
+      <g transform="translate(25, 35)">
+        <image href="${data.avatarUrl}" x="0" y="0" width="40" height="40" />
+        <text x="50" y="25" class="header animate">${data.name}</text>
+      </g>
+
+      <text x="25" y="90" class="stat animate" style="opacity: 0.8; font-size: 13px">
+        ${data.description.length > 60 ? data.description.substring(0, 57) + "..." : data.description}
+      </text>
+
+      <g transform="translate(25, 130)">
+        <text x="0" y="0" class="stat animate">Members: <tspan x="150" class="bold">${data.membersCount}</tspan></text>
+        <text x="0" y="25" class="stat animate">Public Repos: <tspan x="150" class="bold">${data.reposCount}</tspan></text>
+        <text x="0" y="50" class="stat animate">Total Stars: <tspan x="150" class="bold">${data.totalStars}</tspan></text>
+      </g>
+      ${getTerminalOverlay(theme)}
+    </svg>
+  `);
+}
+
 export function generateErrorSVG(message: string): string {
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">

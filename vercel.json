@@ -6,6 +6,7 @@
     { "source": "/streak", "destination": "/api/streak" },
     { "source": "/top-repos", "destination": "/api/top-repos" },
     { "source": "/activity", "destination": "/api/activity" },
-    { "source": "/trophies", "destination": "/api/trophies" }
+    { "source": "/trophies", "destination": "/api/trophies" },
+    { "source": "/org", "destination": "/api/org" }
   ]
 }

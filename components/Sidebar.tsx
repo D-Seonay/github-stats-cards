@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.5.2-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.6.0-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -122,7 +122,18 @@ export default function Sidebar({ config, setConfig }: any) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">06. Target Repository</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">06. Target Organization</label>
+          <input 
+            type="text" 
+            value={config.org}
+            onChange={(e) => setConfig({ ...config, org: e.target.value })}
+            placeholder="GitHub Organization" 
+            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700" 
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">07. Target Repository</label>
           <select 
             value={config.repo}
             onChange={(e) => setConfig({ ...config, repo: e.target.value })}

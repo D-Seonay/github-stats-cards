@@ -45,6 +45,16 @@ export interface ActivityData {
   date: string;
 }
 
+export interface OrgData {
+  name: string;
+  login: string;
+  description: string;
+  avatarUrl: string;
+  membersCount: number;
+  reposCount: number;
+  totalStars: number;
+}
+
 export interface Trophy {
   title: string;
   rank: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND";
@@ -411,4 +421,58 @@ export async function fetchTopLanguages(username: string): Promise<LanguageData[
   });
 
   return Object.entries(langMap).map(([name, data]) => ({ name, ...data })).sort((a, b) => b.size - a.size).slice(0, 5);
+}
+
+export async function fetchOrgStats(org: string): Promise<OrgData> {
+  const query = `
+    query orgInfo($login: String!) {
+      organization(login: $login) {
+        name
+        login
+        description
+        avatarUrl
+        membersWithRole {
+          totalCount
+        }
+        repositories(first: 100) {
+          totalCount
+          nodes {
+            stargazerCount
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await githubFetch(GITHUB_GRAPHQL_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `bearer ${process.env.GH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ query, variables: { login: org } }),
+  });
+
+  const body = await response.json() as any;
+  if (body.errors) {
+    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
+      throw new RateLimitError();
+    }
+    throw new Error(body.errors[0].message);
+  }
+
+  const organization = body.data.organization;
+  if (!organization) throw new Error("Organization not found");
+
+  const totalStars = organization.repositories.nodes.reduce((acc: number, repo: any) => acc + repo.stargazerCount, 0);
+
+  return {
+    name: organization.name || organization.login,
+    login: organization.login,
+    description: organization.description || "",
+    avatarUrl: organization.avatarUrl,
+    membersCount: organization.membersWithRole.totalCount,
+    reposCount: organization.repositories.totalCount,
+    totalStars,
+  };
 }
