@@ -1,6 +1,6 @@
 {
   "name": "github-stats-cards",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "description": "Serverless GitHub stats cards for README",
   "main": "index.js",
