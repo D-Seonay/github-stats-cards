@@ -11,6 +11,8 @@ describe('GitHub Fetcher Logic', () => {
     totalIssues: 5, // Bronze
     totalRepos: 10,
     contributedTo: 100, // Diamond is 100
+    followers: 100,
+    gists: 10,
   };
 
   it('should calculate correct trophy ranks', () => {

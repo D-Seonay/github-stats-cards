@@ -13,6 +13,8 @@ describe('SVG Generator', () => {
     totalIssues: 25,
     totalRepos: 10,
     contributedTo: 5,
+    followers: 100,
+    gists: 10,
   };
 
   it('should generate a stats SVG containing the user name', () => {
