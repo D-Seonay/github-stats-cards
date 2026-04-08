@@ -45,7 +45,39 @@ export interface ActivityData {
   date: string;
 }
 
+export interface Trophy {
+  title: string;
+  rank: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND";
+  value: number;
+}
+
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
+
+export function calculateTrophies(data: GithubData): Trophy[] {
+  const tiers = {
+    stars: [10, 50, 100, 500, 1000],
+    commits: [100, 500, 1000, 5000, 10000],
+    prs: [10, 50, 100, 500, 1000],
+    issues: [10, 50, 100, 500, 1000],
+    contribs: [5, 10, 25, 50, 100],
+  };
+
+  const getRank = (val: number, thresholds: number[]): Trophy["rank"] => {
+    if (val >= thresholds[4]) return "DIAMOND";
+    if (val >= thresholds[3]) return "PLATINUM";
+    if (val >= thresholds[2]) return "GOLD";
+    if (val >= thresholds[1]) return "SILVER";
+    return "BRONZE";
+  };
+
+  return [
+    { title: "Stars", value: data.totalStars, rank: getRank(data.totalStars, tiers.stars) },
+    { title: "Commits", value: data.totalCommits, rank: getRank(data.totalCommits, tiers.commits) },
+    { title: "PRs", value: data.totalPRs, rank: getRank(data.totalPRs, tiers.prs) },
+    { title: "Issues", value: data.totalIssues, rank: getRank(data.totalIssues, tiers.issues) },
+    { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
+  ];
+}
 
 export class RateLimitError extends Error {
   constructor(message: string = "GitHub API rate limit exceeded") {

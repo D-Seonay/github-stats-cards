@@ -1,17 +1,52 @@
-import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher";
+import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData, Trophy } from "./github-fetcher";
 import { Theme } from "./themes";
 import { Translations } from "./locales";
 import { minifySVG } from "./utils";
 
-const COMMON_STYLES = `
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  .animate {
-    animation: fadeIn 0.6s ease-out;
-  }
-`;
+const RANK_COLORS = {
+  BRONZE: "#8d5524",
+  SILVER: "#c0c0c0",
+  GOLD: "#ffd700",
+  PLATINUM: "#e5e4e2",
+  DIAMOND: "#b9f2ff",
+};
+
+export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
+  const { title_color, bg_color, text_color } = theme;
+
+  const trophyIcons = trophies.map((t, index) => {
+    const x = (index % 3) * 150;
+    const y = Math.floor(index / 3) * 70;
+    const color = RANK_COLORS[t.rank];
+    const delay = 300 + (index * 100);
+
+    return `
+      <g transform="translate(${x}, ${y})" class="animate" style="animation-delay: ${delay}ms">
+        <circle cx="20" cy="20" r="18" fill="${color}" opacity="0.2" />
+        <path d="M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z" fill="${color}" />
+        <text x="45" y="18" class="stat bold" style="fill: ${color}">${t.title}</text>
+        <text x="45" y="32" class="stat small" style="fill: #${text_color}">${t.rank} (${t.value})</text>
+      </g>
+    `;
+  }).join("");
+
+  return minifySVG(`
+    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        ${COMMON_STYLES}
+        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; }
+        .small { font-size: 10px; opacity: 0.7; }
+        .bold { font-weight: 700; }
+      </style>
+      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      <text x="25" y="35" class="header animate">Achievement Trophies</text>
+      <g transform="translate(25, 65)">
+        ${trophyIcons}
+      </g>
+    </svg>
+  `);
+}
 
 export function generateRateLimitSVG(theme: Theme): string {
   const { title_color, text_color, bg_color } = theme;

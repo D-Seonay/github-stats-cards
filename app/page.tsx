@@ -32,6 +32,7 @@ export default function Home() {
   const streakUrl = `${baseUrl}/api/streak?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
   const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
   const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
+  const trophiesUrl = `${baseUrl}/api/trophies?username=${debouncedConfig.username}&theme=${config.theme}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
@@ -42,7 +43,8 @@ export default function Home() {
         <PreviewCard title="03. Contribution Streak" src={streakUrl} />
         <PreviewCard title="04. Top Repositories" src={topReposUrl} />
         <PreviewCard title="05. Recent Activity" src={activityUrl} />
-        {config.repo && <PreviewCard title="06. Project Card" src={repoUrl} />}
+        <PreviewCard title="06. Achievement Trophies" src={trophiesUrl} />
+        {config.repo && <PreviewCard title="07. Project Card" src={repoUrl} />}
         <ThemeGallery config={config} setConfig={setConfig} />
       </main>
     </div>
