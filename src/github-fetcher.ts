@@ -9,7 +9,6 @@ export interface GithubData {
   contributedTo: number;
   followers: number;
   gists: number;
-  discussions: number;
 }
 
 export interface LanguageData {
@@ -330,7 +329,6 @@ export async function fetchStats(username: string): Promise<GithubData> {
         login
         followers { totalCount }
         gists { totalCount }
-        repositoryDiscussions { totalCount }
         contributionsCollection {
           totalCommitContributions
           restrictedContributionsCount
@@ -379,7 +377,6 @@ export async function fetchStats(username: string): Promise<GithubData> {
     contributedTo: user.repositoriesContributedTo.totalCount,
     followers: user.followers.totalCount,
     gists: user.gists.totalCount,
-    discussions: user.repositoryDiscussions.totalCount,
   };
 }
 

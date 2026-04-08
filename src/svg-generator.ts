@@ -252,7 +252,6 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
     { key: "contribs", label: translations.contributedTo, value: data.contributedTo },
     { key: "followers", label: translations.followers, value: data.followers },
     { key: "gists", label: translations.gists, value: data.gists },
-    { key: "discussions", label: translations.discussions, value: data.discussions },
   ].filter(s => !hide.includes(s.key));
 
   const height = compact ? Math.max(100, 45 + stats.length * 25) : 195;
