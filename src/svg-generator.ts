@@ -7,13 +7,8 @@ const COMMON_STYLES = `
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  @keyframes slideIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
   .animate {
-    animation: slideIn 0.6s ease-out forwards;
-    opacity: 0;
+    animation: fadeIn 0.6s ease-out;
   }
 `;
 
@@ -28,7 +23,7 @@ export function generateRateLimitSVG(theme: Theme): string {
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <g class="animate" style="animation-delay: 200ms">
+      <g class="animate">
         <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" class="header">Rate Limit Exceeded</text>
         <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" class="stat">
           GitHub API is temporarily unavailable. 
@@ -46,9 +41,8 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
 
   const rows = data.map((activity, index) => {
     const y = index * 25;
-    const delay = 300 + (index * 100);
     return `
-      <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
+      <g transform="translate(0, ${y})" class="animate">
         <text x="0" y="0" class="stat bold">${activity.type}</text>
         <text x="100" y="0" class="stat">${activity.repo.length > 25 ? activity.repo.substring(0, 22) + "..." : activity.repo}</text>
         <text x="400" y="0" class="stat small text-right" text-anchor="end">${activity.date}</text>
@@ -66,7 +60,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
         .bold { font-weight: 700; fill: #${title_color}; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${translations.recentActivityTitle}</text>
+      <text x="25" y="35" class="header animate">${translations.recentActivityTitle}</text>
       
       <g transform="translate(25, 70)">
         ${rows}
@@ -80,10 +74,9 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
 
   const rows = data.map((repo, index) => {
     const y = index * 25;
-    const delay = 300 + (index * 100);
     const truncatedName = repo.name.length > 18 ? repo.name.substring(0, 15) + "..." : repo.name;
     return `
-      <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
+      <g transform="translate(0, ${y})" class="animate">
         <text x="0" y="0" class="stat bold">${truncatedName}</text>
         <g transform="translate(200, 0)">
           <circle cx="5" cy="-4" r="4" fill="${repo.languageColor}"/>
@@ -105,7 +98,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
         .bold { font-weight: 700; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${translations.topReposTitle}</text>
+      <text x="25" y="35" class="header animate">${translations.topReposTitle}</text>
       
       <g transform="translate(25, 70)">
         ${rows}
@@ -127,18 +120,18 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
         .label { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; opacity: 0.8; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${translations.streakTitle}</text>
+      <text x="25" y="35" class="header animate">${translations.streakTitle}</text>
       
       <g transform="translate(25, 80)">
-        <g transform="translate(0, 0)" class="animate" style="animation-delay: 300ms">
+        <g transform="translate(0, 0)" class="animate">
           <text x="0" y="0" class="bold">${data.currentStreak}</text>
           <text x="0" y="20" class="label">${translations.currentStreak}</text>
         </g>
-        <g transform="translate(160, 0)" class="animate" style="animation-delay: 450ms">
+        <g transform="translate(160, 0)" class="animate">
           <text x="0" y="0" class="bold">${data.longestStreak}</text>
           <text x="0" y="20" class="label">${translations.longestStreak}</text>
         </g>
-        <g transform="translate(320, 0)" class="animate" style="animation-delay: 600ms">
+        <g transform="translate(320, 0)" class="animate">
           <text x="0" y="0" class="bold">${data.totalContributions}</text>
           <text x="0" y="20" class="label">${translations.totalContributions}</text>
         </g>
@@ -160,14 +153,14 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
         .bold { font-weight: 700; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${title}</text>
+      <text x="25" y="35" class="header animate">${title}</text>
       
       <g transform="translate(25, 60)">
-        <text x="0" y="0" class="stat animate" style="animation-delay: 300ms">${translations.totalStars} <tspan x="180" class="bold">${data.totalStars}</tspan></text>
-        <text x="0" y="25" class="stat animate" style="animation-delay: 400ms">${translations.totalCommits} <tspan x="180" class="bold">${data.totalCommits}</tspan></text>
-        <text x="0" y="50" class="stat animate" style="animation-delay: 500ms">${translations.totalPRs} <tspan x="180" class="bold">${data.totalPRs}</tspan></text>
-        <text x="0" y="75" class="stat animate" style="animation-delay: 600ms">${translations.totalIssues} <tspan x="180" class="bold">${data.totalIssues}</tspan></text>
-        <text x="0" y="100" class="stat animate" style="animation-delay: 700ms">${translations.contributedTo} <tspan x="180" class="bold">${data.contributedTo}</tspan></text>
+        <text x="0" y="0" class="stat animate">${translations.totalStars} <tspan x="180" class="bold">${data.totalStars}</tspan></text>
+        <text x="0" y="25" class="stat animate">${translations.totalCommits} <tspan x="180" class="bold">${data.totalCommits}</tspan></text>
+        <text x="0" y="50" class="stat animate">${translations.totalPRs} <tspan x="180" class="bold">${data.totalPRs}</tspan></text>
+        <text x="0" y="75" class="stat animate">${translations.totalIssues} <tspan x="180" class="bold">${data.totalIssues}</tspan></text>
+        <text x="0" y="100" class="stat animate">${translations.contributedTo} <tspan x="180" class="bold">${data.contributedTo}</tspan></text>
       </g>
     </svg>
   `;
@@ -190,9 +183,8 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   const legend = data.map((lang, index) => {
     const percentage = ((lang.size / totalSize) * 100).toFixed(1);
     const y = index * 20;
-    const delay = 450 + (index * 100);
     return `
-      <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
+      <g transform="translate(0, ${y})" class="animate">
         <circle cx="5" cy="5" r="5" fill="${lang.color}"/>
         <text x="20" y="10" class="stat">${lang.name} <tspan class="bold">${percentage}%</tspan></text>
       </g>
@@ -208,9 +200,9 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
         .bold { font-weight: 700; }
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${translations.topLangsTitle}</text>
+      <text x="25" y="35" class="header animate">${translations.topLangsTitle}</text>
       
-      <g transform="translate(25, 55)" class="animate" style="animation-delay: 300ms">
+      <g transform="translate(25, 55)" class="animate">
         <mask id="bar-mask">
           <rect width="${barWidth}" height="${barHeight}" rx="4"/>
         </mask>
@@ -238,10 +230,10 @@ export function generateProjectSVG(data: ProjectData, theme: Theme): string {
         .stat { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
       </style>
       <rect x="0.5" y="0.5" width="399" height="149" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate" style="animation-delay: 150ms">${data.name}</text>
-      <text x="25" y="60" class="description animate" style="animation-delay: 300ms">${data.description.length > 50 ? data.description.substring(0, 47) + "..." : data.description}</text>
+      <text x="25" y="35" class="header animate">${data.name}</text>
+      <text x="25" y="60" class="description animate">${data.description.length > 50 ? data.description.substring(0, 47) + "..." : data.description}</text>
       
-      <g transform="translate(25, 110)" class="animate" style="animation-delay: 450ms">
+      <g transform="translate(25, 110)" class="animate">
         <circle cx="5" cy="5" r="5" fill="${data.languageColor}"/>
         <text x="15" y="10" class="stat">${data.language}</text>
         

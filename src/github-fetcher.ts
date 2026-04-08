@@ -141,38 +141,25 @@ export async function fetchTopRepos(username: string): Promise<TopRepoData[]> {
 }
 
 export async function fetchStreak(username: string): Promise<StreakData> {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const lastYear = currentYear - 1;
-
   const query = `
-    query streakInfo($login: String!, $from1: DateTime!, $to1: DateTime!, $from2: DateTime!, $to2: DateTime!) {
+    query streakInfo($login: String!) {
       user(login: $login) {
         name
         login
-        c1: contributionsCollection(from: $from1, to: $to1) {
+        contributionsCollection {
           contributionCalendar {
             totalContributions
-            weeks { contributionDays { contributionCount date } }
-          }
-        }
-        c2: contributionsCollection(from: $from2, to: $to2) {
-          contributionCalendar {
-            totalContributions
-            weeks { contributionDays { contributionCount date } }
+            weeks {
+              contributionDays {
+                contributionCount
+                date
+              }
+            }
           }
         }
       }
     }
   `;
-
-  const variables = {
-    login: username,
-    from1: `${currentYear}-01-01T00:00:00Z`,
-    to1: now.toISOString(),
-    from2: `${lastYear}-01-01T00:00:00Z`,
-    to2: `${lastYear}-12-31T23:59:59Z`,
-  };
 
   const response = await githubFetch(GITHUB_GRAPHQL_URL, {
     method: "POST",
@@ -180,7 +167,7 @@ export async function fetchStreak(username: string): Promise<StreakData> {
       Authorization: `bearer ${process.env.GH_TOKEN}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ query, variables }),
+    body: JSON.stringify({ query, variables: { login: username } }),
   });
 
   const body = await response.json() as any;
@@ -194,41 +181,41 @@ export async function fetchStreak(username: string): Promise<StreakData> {
   const user = body.data.user;
   if (!user) throw new Error("User not found");
 
-  const days1 = user.c1.contributionCalendar.weeks.flatMap((w: any) => w.contributionDays);
-  const days2 = user.c2.contributionCalendar.weeks.flatMap((w: any) => w.contributionDays);
+  const calendar = user.contributionsCollection.contributionCalendar;
+  const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
   
-  // Combine all days and sort descending
-  const allDays = [...days1, ...days2].sort((a: any, b: any) => 
+  // Sort days by date descending for current streak
+  const sortedDays = [...days].sort((a: any, b: any) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
-
-  // Remove potential duplicates at year boundary
-  const uniqueDays = Array.from(new Map(allDays.map(d => [d.date, d])).values());
 
   const today = new Date().toISOString().split('T')[0];
   const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
 
-  // 1. Current Streak calculation with grace period
   let currentStreak = 0;
   let foundStart = false;
-  for (const day of uniqueDays) {
+
+  for (const day of sortedDays) {
     if (day.contributionCount > 0) {
       currentStreak++;
       foundStart = true;
     } else {
-      // If we haven't found a single contribution yet, 
-      // check if we are still within the "today/yesterday" grace period
       if (!foundStart) {
-        if (day.date < yesterday) break; // Streak broken if yesterday was 0
+        // If we are at "today" or "tomorrow" (UTC), we continue to check yesterday
+        if (day.date > yesterday) continue;
+        // If we reach yesterday and it's 0, streak is broken
+        break;
       } else {
-        // We already have a streak, and we just hit a 0. Streak is over.
+        // Streak started but we hit a gap
         break;
       }
     }
   }
 
-  // 2. Longest Streak calculation (chronological)
-  const chronoDays = [...uniqueDays].reverse();
+  // Longest Streak calculation (ascending)
+  const chronoDays = [...days].sort((a: any, b: any) => 
+    new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
   let longestStreak = 0;
   let tempStreak = 0;
   for (const day of chronoDays) {
@@ -244,7 +231,7 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     name: user.name || user.login,
     currentStreak,
     longestStreak,
-    totalContributions: user.c1.contributionCalendar.totalContributions + user.c2.contributionCalendar.totalContributions,
+    totalContributions: calendar.totalContributions,
   };
 }
 
