@@ -91,9 +91,7 @@ export default function Sidebar({ config, setConfig }: any) {
                 { id: 'commits', label: 'Hide Commits' },
                 { id: 'prs', label: 'Hide PRs' },
                 { id: 'issues', label: 'Hide Issues' },
-                { id: 'contribs', label: 'Hide Contribs' },
-                { id: 'followers', label: 'Hide Followers' },
-                { id: 'gists', label: 'Hide Gists' }
+                { id: 'contribs', label: 'Hide Contribs' }
               ].map(s => (
                 <button 
                   key={s.id}

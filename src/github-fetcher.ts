@@ -7,8 +7,6 @@ export interface GithubData {
   totalIssues: number;
   totalRepos: number;
   contributedTo: number;
-  followers: number;
-  gists: number;
 }
 
 export interface LanguageData {
@@ -52,7 +50,6 @@ export interface OrgData {
   login: string;
   description: string;
   avatarUrl: string;
-  membersCount: number;
   reposCount: number;
   totalStars: number;
 }
@@ -327,8 +324,6 @@ export async function fetchStats(username: string): Promise<GithubData> {
       user(login: $login) {
         name
         login
-        followers { totalCount }
-        gists { totalCount }
         contributionsCollection {
           totalCommitContributions
           restrictedContributionsCount
@@ -375,8 +370,6 @@ export async function fetchStats(username: string): Promise<GithubData> {
     totalIssues: user.issues.totalCount,
     totalRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
-    followers: user.followers.totalCount,
-    gists: user.gists.totalCount,
   };
 }
 
@@ -437,9 +430,6 @@ export async function fetchOrgStats(org: string): Promise<OrgData> {
         login
         description
         avatarUrl
-        membersWithRole {
-          totalCount
-        }
         repositories(first: 100) {
           totalCount
           nodes {
@@ -477,7 +467,6 @@ export async function fetchOrgStats(org: string): Promise<OrgData> {
     login: organization.login,
     description: organization.description || "",
     avatarUrl: organization.avatarUrl,
-    membersCount: organization.membersWithRole.totalCount,
     reposCount: organization.repositories.totalCount,
     totalStars,
   };

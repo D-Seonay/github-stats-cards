@@ -250,8 +250,6 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
     { key: "prs", label: translations.totalPRs, value: data.totalPRs },
     { key: "issues", label: translations.totalIssues, value: data.totalIssues },
     { key: "contribs", label: translations.contributedTo, value: data.contributedTo },
-    { key: "followers", label: translations.followers, value: data.followers },
-    { key: "gists", label: translations.gists, value: data.gists },
   ].filter(s => !hide.includes(s.key));
 
   const height = compact ? Math.max(100, 45 + stats.length * 25) : 195;
@@ -409,9 +407,8 @@ export function generateOrgStatsSVG(data: OrgData, theme: Theme, customCSS?: str
       </text>
 
       <g transform="translate(25, 130)">
-        <text x="0" y="0" class="stat animate">Members: <tspan x="150" class="bold">${data.membersCount}</tspan></text>
-        <text x="0" y="25" class="stat animate">Public Repos: <tspan x="150" class="bold">${data.reposCount}</tspan></text>
-        <text x="0" y="50" class="stat animate">Total Stars: <tspan x="150" class="bold">${data.totalStars}</tspan></text>
+        <text x="0" y="0" class="stat animate">Public Repos: <tspan x="150" class="bold">${data.reposCount}</tspan></text>
+        <text x="0" y="25" class="stat animate">Total Stars: <tspan x="150" class="bold">${data.totalStars}</tspan></text>
       </g>
       ${getTerminalOverlay(theme)}
     </svg>
