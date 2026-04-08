@@ -1,6 +1,7 @@
 import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher";
 import { Theme } from "./themes";
 import { Translations } from "./locales";
+import { minifySVG } from "./utils";
 
 const COMMON_STYLES = `
   @keyframes fadeIn {
@@ -15,7 +16,7 @@ const COMMON_STYLES = `
 export function generateRateLimitSVG(theme: Theme): string {
   const { title_color, text_color, bg_color } = theme;
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -33,7 +34,7 @@ export function generateRateLimitSVG(theme: Theme): string {
         </text>
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations): string {
@@ -50,7 +51,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
     `;
   }).join("");
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -66,7 +67,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
         ${rows}
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations): string {
@@ -88,7 +89,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
     `;
   }).join("");
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -104,13 +105,13 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
         ${rows}
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -137,14 +138,14 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
         </g>
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
   const title = translations.statsTitle.replace("{name}", data.name);
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -163,7 +164,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
         <text x="0" y="100" class="stat animate">${translations.contributedTo} <tspan x="180" class="bold">${data.contributedTo}</tspan></text>
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations): string {
@@ -183,6 +184,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   const legend = data.map((lang, index) => {
     const percentage = ((lang.size / totalSize) * 100).toFixed(1);
     const y = index * 20;
+    const delay = 450 + (index * 100);
     return `
       <g transform="translate(0, ${y})" class="animate">
         <circle cx="5" cy="5" r="5" fill="${lang.color}"/>
@@ -191,7 +193,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
     `;
   }).join("");
 
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -215,13 +217,13 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
         ${legend}
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateProjectSVG(data: ProjectData, theme: Theme): string {
   const { title_color, text_color, bg_color } = theme;
 
-  return `
+  return minifySVG(`
     <svg width="400" height="150" viewBox="0 0 400 150" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${COMMON_STYLES}
@@ -246,11 +248,11 @@ export function generateProjectSVG(data: ProjectData, theme: Theme): string {
         </g>
       </g>
     </svg>
-  `;
+  `);
 }
 
 export function generateErrorSVG(message: string): string {
-  return `
+  return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#fffefe" stroke="#E4E2E2"/>
       <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#D32F2F">
@@ -260,5 +262,5 @@ export function generateErrorSVG(message: string): string {
         ${message}
       </text>
     </svg>
-  `;
+  `);
 }
