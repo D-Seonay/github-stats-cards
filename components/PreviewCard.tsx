@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, Share2 } from "lucide-react";
 
 export default function PreviewCard({ title, src }: { title: string, src: string }) {
   const [isLoading, setIsLoading] = useState(true);
@@ -15,6 +15,12 @@ export default function PreviewCard({ title, src }: { title: string, src: string
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const shareOnTwitter = () => {
+    const text = encodeURIComponent(`Check out my GitHub stats on STAT-STATS! 🚀\n\nGenerated with @D-Seonay's tool:`);
+    const url = encodeURIComponent(`${window.location.origin}${src}`);
+    window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}&hashtags=GitHub,OpenSource,Stats`, '_blank');
   };
 
   return (
@@ -83,6 +89,13 @@ export default function PreviewCard({ title, src }: { title: string, src: string
           >
             <Copy size={12} />
             Link
+          </button>
+          <button 
+            onClick={shareOnTwitter} 
+            className="border border-sky-500/50 text-sky-400 px-3 py-1.5 text-[10px] font-bold uppercase hover:bg-sky-500/10 transition-colors flex items-center gap-2"
+          >
+            <Share2 size={12} />
+            Share on X
           </button>
         </div>
       </div>
