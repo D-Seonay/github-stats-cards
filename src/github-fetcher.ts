@@ -135,31 +135,46 @@ export async function fetchStreak(username: string): Promise<StreakData> {
   const calendar = user.contributionsCollection.contributionCalendar;
   const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
   
-  // Reverse to count from today
-  const reversedDays = [...days].reverse();
+  // Sort days by date descending
+  const sortedDays = [...days].sort((a: any, b: any) => 
+    new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
   
   let currentStreak = 0;
   let longestStreak = 0;
   let tempStreak = 0;
 
-  // Calculate current streak
-  let todayReached = false;
-  for (const day of reversedDays) {
-    if (day.contributionCount > 0) {
+  // GitHub uses UTC dates. We need to find "today" in UTC.
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+
+  // Current Streak Calculation
+  // We look for the first day with contributions starting from today or yesterday
+  let startIndex = sortedDays.findIndex(d => d.date === today || d.date === yesterday);
+  if (startIndex === -1) startIndex = 0;
+
+  // If today has no contributions, start checking from yesterday
+  if (sortedDays[startIndex].contributionCount === 0 && sortedDays[startIndex].date === today) {
+    startIndex++;
+  }
+
+  for (let i = startIndex; i < sortedDays.length; i++) {
+    if (sortedDays[i].contributionCount > 0) {
       currentStreak++;
     } else {
-      // If we haven't found a contribution yet and it's not today, 
-      // the streak might have ended yesterday. 
-      // But for simplicity: first gap ends the current streak.
-      if (currentStreak > 0) break;
-      // Allow 1 day gap if today has 0 but yesterday has > 0
-      if (todayReached) break;
-      todayReached = true; 
+      // If we found a 0 after the streak started, we stop.
+      // Special case: if we are at the very beginning and haven't found any contributions yet, 
+      // it means the streak is 0 or hasn't started today/yesterday.
+      break;
     }
   }
 
-  // Calculate longest streak
-  for (const day of days) {
+  // Longest Streak Calculation (ascending order)
+  const chronologicalDays = [...days].sort((a: any, b: any) => 
+    new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+
+  for (const day of chronologicalDays) {
     if (day.contributionCount > 0) {
       tempStreak++;
       if (tempStreak > longestStreak) longestStreak = tempStreak;
