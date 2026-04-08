@@ -1,4 +1,4 @@
-import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData, Trophy } from "./github-fetcher";
+import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData, Trophy, OrgData } from "./github-fetcher";
 import { Theme } from "./themes";
 import { Translations } from "./locales";
 import { minifySVG } from "./utils";
