@@ -9,6 +9,7 @@ export async function GET(request: NextRequest) {
   const repo = searchParams.get("repo");
   const theme = searchParams.get("theme");
   const bg_color = searchParams.get("bg_color");
+  const custom_css = searchParams.get("custom_css") || undefined;
 
   const themeObj = getTheme(theme || "light", bg_color || undefined);
 
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
 
   try {
     const data = await fetchProject(username, repo);
-    const svg = generateProjectSVG(data, themeObj);
+    const svg = generateProjectSVG(data, themeObj, custom_css);
 
     return new NextResponse(svg, {
       status: 200,

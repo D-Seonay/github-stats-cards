@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.4.1-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.5.0-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -112,7 +112,17 @@ export default function Sidebar({ config, setConfig }: any) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">05. Target Repository</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">05. Custom Design (CSS)</label>
+          <textarea 
+            value={config.customCSS}
+            onChange={(e) => setConfig({ ...config, customCSS: e.target.value })}
+            placeholder=".header { fill: red; }" 
+            className="w-full h-24 bg-zinc-900 border border-zinc-800 p-3 text-[10px] focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700 font-mono resize-none"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">06. Target Repository</label>
           <select 
             value={config.repo}
             onChange={(e) => setConfig({ ...config, repo: e.target.value })}

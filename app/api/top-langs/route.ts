@@ -10,6 +10,7 @@ export async function GET(request: NextRequest) {
   const theme = searchParams.get("theme");
   const bg_color = searchParams.get("bg_color");
   const locale = searchParams.get("locale");
+  const custom_css = searchParams.get("custom_css") || undefined;
 
   const themeObj = getTheme(theme || "light", bg_color || undefined);
 
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
   try {
     const data = await fetchTopLanguages(username);
     const translations = getTranslations(locale || "en");
-    const svg = generateLanguagesSVG(data, themeObj, translations);
+    const svg = generateLanguagesSVG(data, themeObj, translations, custom_css);
 
     return new NextResponse(svg, {
       status: 200,

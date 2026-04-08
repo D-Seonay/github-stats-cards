@@ -12,6 +12,7 @@ export default function Home() {
     repo: "",
     hide: [] as string[],
     compact: false,
+    customCSS: "",
   });
 
   const [isLoaded, setIsLoaded] = useState(false);
@@ -46,16 +47,18 @@ export default function Home() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [config.username, config.hide, config.compact]);
+  }, [config.username, config.hide, config.compact, config.customCSS]);
 
   const baseUrl = ""; 
-  const statsUrl = `${baseUrl}/api/stats?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}&compact=${config.compact}&hide=${config.hide.join(",")}`;
-  const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
-  const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${config.repo}&theme=${config.theme}`;
-  const streakUrl = `${baseUrl}/api/streak?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
-  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
-  const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}`;
-  const trophiesUrl = `${baseUrl}/api/trophies?username=${debouncedConfig.username}&theme=${config.theme}`;
+  const cssParam = config.customCSS ? `&custom_css=${encodeURIComponent(config.customCSS)}` : "";
+  
+  const statsUrl = `${baseUrl}/api/stats?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}&compact=${config.compact}&hide=${config.hide.join(",")}${cssParam}`;
+  const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
+  const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${config.repo}&theme=${config.theme}${cssParam}`;
+  const streakUrl = `${baseUrl}/api/streak?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
+  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
+  const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}`;
+  const trophiesUrl = `${baseUrl}/api/trophies?username=${debouncedConfig.username}&theme=${config.theme}${cssParam}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">

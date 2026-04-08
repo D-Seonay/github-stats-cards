@@ -35,7 +35,7 @@ function getTerminalOverlay(theme: Theme): string {
   return "";
 }
 
-export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
+export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: string): string {
   const { title_color, bg_color, text_color } = theme;
 
   const trophyIcons = trophies.map((t, index) => {
@@ -62,6 +62,7 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; }
         .small { font-size: 10px; opacity: 0.7; }
         .bold { font-weight: 700; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">Achievement Trophies</text>
@@ -73,7 +74,7 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme): string {
   `);
 }
 
-export function generateRateLimitSVG(theme: Theme): string {
+export function generateRateLimitSVG(theme: Theme, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
 
   return minifySVG(`
@@ -82,6 +83,7 @@ export function generateRateLimitSVG(theme: Theme): string {
         ${COMMON_STYLES}
         .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <g class="animate">
@@ -98,7 +100,7 @@ export function generateRateLimitSVG(theme: Theme): string {
   `);
 }
 
-export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations): string {
+export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
 
   const rows = data.map((activity, index) => {
@@ -120,6 +122,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .small { font-size: 12px; opacity: 0.6; }
         .bold { font-weight: 700; fill: #${title_color}; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.recentActivityTitle}</text>
@@ -132,7 +135,7 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
   `);
 }
 
-export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations): string {
+export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
 
   const rows = data.map((repo, index) => {
@@ -159,6 +162,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .small { font-size: 12px; opacity: 0.8; }
         .bold { font-weight: 700; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.topReposTitle}</text>
@@ -171,7 +175,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
   `);
 }
 
-export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations): string {
+export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
 
   return minifySVG(`
@@ -182,6 +186,7 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .bold { font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
         .label { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; opacity: 0.8; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.streakTitle}</text>
@@ -205,7 +210,7 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
   `);
 }
 
-export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations, hide: string[] = [], compact: boolean = false): string {
+export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations, hide: string[] = [], compact: boolean = false, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
   const title = translations.statsTitle.replace("{name}", data.name);
 
@@ -236,6 +241,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
         .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .bold { font-weight: 700; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="${height - 1}" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${title}</text>
@@ -248,7 +254,7 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   `);
 }
 
-export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations): string {
+export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
   const totalSize = data.reduce((acc, lang) => acc + lang.size, 0);
 
@@ -280,6 +286,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
         .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
         .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .bold { font-weight: 700; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${translations.topLangsTitle}</text>
@@ -301,7 +308,7 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   `);
 }
 
-export function generateProjectSVG(data: ProjectData, theme: Theme): string {
+export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: string): string {
   const { title_color, text_color, bg_color } = theme;
 
   return minifySVG(`
@@ -311,6 +318,7 @@ export function generateProjectSVG(data: ProjectData, theme: Theme): string {
         .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
         .description { font: 400 13px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
         .stat { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="399" height="149" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
       <text x="25" y="35" class="header animate">${data.name}</text>
