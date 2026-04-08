@@ -39,7 +39,7 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
 
   const rows = data.map((repo, index) => {
     const y = index * 25;
-    const truncatedName = repo.name.length > 22 ? repo.name.substring(0, 19) + "..." : repo.name;
+    const truncatedName = repo.name.length > 18 ? repo.name.substring(0, 15) + "..." : repo.name;
     return `
       <g transform="translate(0, ${y})">
         <text x="0" y="0" class="stat bold">${truncatedName}</text>
