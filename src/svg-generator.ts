@@ -7,9 +7,10 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
 
   const rows = data.map((repo, index) => {
     const y = index * 25;
+    const truncatedName = repo.name.length > 22 ? repo.name.substring(0, 19) + "..." : repo.name;
     return `
       <g transform="translate(0, ${y})">
-        <text x="0" y="0" class="stat bold">${repo.name}</text>
+        <text x="0" y="0" class="stat bold">${truncatedName}</text>
         <g transform="translate(200, 0)">
           <circle cx="5" cy="-4" r="4" fill="${repo.languageColor}"/>
           <text x="15" y="0" class="stat small">${repo.language}</text>
