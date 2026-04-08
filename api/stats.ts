@@ -1,7 +1,7 @@
-import { fetchStats } from "../src/github-fetcher.js";
-import { generateStatsSVG, generateErrorSVG } from "../src/svg-generator.js";
-import { getTheme } from "../src/themes.js";
-import { getTranslations } from "../src/locales.js";
+import { fetchStats } from "@/src/github-fetcher";
+import { generateStatsSVG, generateErrorSVG } from "@/src/svg-generator";
+import { getTheme } from "@/src/themes";
+import { getTranslations } from "@/src/locales";
 
 export default async function handler(req: any, res: any) {
   const { username, theme, bg_color, locale } = req.query;

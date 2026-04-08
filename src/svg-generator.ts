@@ -1,6 +1,6 @@
-import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher.js";
-import { Theme } from "./themes.js";
-import { Translations } from "./locales.js";
+import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher";
+import { Theme } from "./themes";
+import { Translations } from "./locales";
 
 export function generateActivitySVG(data: ActivityData[], theme: Theme): string {
   const { title_color, text_color, bg_color } = theme;

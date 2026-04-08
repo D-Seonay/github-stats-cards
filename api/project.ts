@@ -1,6 +1,6 @@
-import { fetchProject } from "../src/github-fetcher.js";
-import { generateProjectSVG, generateErrorSVG } from "../src/svg-generator.js";
-import { getTheme } from "../src/themes.js";
+import { fetchProject } from "@/src/github-fetcher";
+import { generateProjectSVG, generateErrorSVG } from "@/src/svg-generator";
+import { getTheme } from "@/src/themes";
 
 export default async function handler(req: any, res: any) {
   const { username, repo, theme, bg_color } = req.query;

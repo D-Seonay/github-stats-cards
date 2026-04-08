@@ -1,5 +1,5 @@
 "use client";
-import { themes } from "../src/themes.js";
+import { themes } from "@/src/themes";
 import { motion } from "framer-motion";
 
 export default function ThemeGallery({ config, setConfig }: any) {
