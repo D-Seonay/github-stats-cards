@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import PreviewCard from "@/components/PreviewCard";
 import ThemeGallery from "@/components/ThemeGallery";
@@ -12,13 +12,24 @@ export default function Home() {
     repo: ""
   });
 
-  const baseUrl = ""; // Local paths work relative to root
-  const statsUrl = `${baseUrl}/api/stats?username=${config.username}&theme=${config.theme}&locale=${config.locale}`;
-  const langsUrl = `${baseUrl}/api/top-langs?username=${config.username}&theme=${config.theme}&locale=${config.locale}`;
-  const repoUrl = `${baseUrl}/api/project?username=${config.username}&repo=${config.repo}&theme=${config.theme}`;
-  const streakUrl = `${baseUrl}/api/streak?username=${config.username}&theme=${config.theme}`;
-  const topReposUrl = `${baseUrl}/api/top-repos?username=${config.username}&theme=${config.theme}`;
-  const activityUrl = `${baseUrl}/api/activity?username=${config.username}&theme=${config.theme}`;
+  // Debouncing logic to save API calls
+  const [debouncedUsername, setDebouncedUsername] = useState(config.username);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedUsername(config.username);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [config.username]);
+
+  const baseUrl = ""; 
+  const statsUrl = `${baseUrl}/api/stats?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
+  const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedUsername}&theme=${config.theme}&locale=${config.locale}`;
+  const repoUrl = `${baseUrl}/api/project?username=${debouncedUsername}&repo=${config.repo}&theme=${config.theme}`;
+  const streakUrl = `${baseUrl}/api/streak?username=${debouncedUsername}&theme=${config.theme}`;
+  const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedUsername}&theme=${config.theme}`;
+  const activityUrl = `${baseUrl}/api/activity?username=${debouncedUsername}&theme=${config.theme}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
