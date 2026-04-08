@@ -197,7 +197,7 @@ export async function fetchStreak(username: string): Promise<StreakData> {
   let currentStreak = 0;
   
   // Find where the streak starts: either today or yesterday must have contributions
-  const latestContributionIndex = sortedPastDays.findIndex(d => d.contributionCount > 0);
+  const latestContributionIndex = sortedPastDays.findIndex((d: any) => d.contributionCount > 0);
   
   if (latestContributionIndex !== -1) {
     const latestDate = sortedPastDays[latestContributionIndex].date;
