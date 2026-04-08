@@ -16,6 +16,7 @@ export default function Home() {
   const langsUrl = `${baseUrl}/api/top-langs?username=${config.username}&theme=${config.theme}&locale=${config.locale}`;
   const repoUrl = `${baseUrl}/api/project?username=${config.username}&repo=${config.repo}&theme=${config.theme}`;
   const streakUrl = `${baseUrl}/api/streak?username=${config.username}&theme=${config.theme}`;
+  const topReposUrl = `${baseUrl}/api/top-repos?username=${config.username}&theme=${config.theme}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
@@ -24,7 +25,8 @@ export default function Home() {
         <PreviewCard title="01. User Statistics" src={statsUrl} />
         <PreviewCard title="02. Top Languages" src={langsUrl} />
         <PreviewCard title="03. Contribution Streak" src={streakUrl} />
-        {config.repo && <PreviewCard title="04. Project Card" src={repoUrl} />}
+        <PreviewCard title="04. Top Repositories" src={topReposUrl} />
+        {config.repo && <PreviewCard title="05. Project Card" src={repoUrl} />}
       </main>
     </div>
   );

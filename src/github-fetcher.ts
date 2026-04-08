@@ -31,7 +31,64 @@ export interface StreakData {
   totalContributions: number;
 }
 
+export interface TopRepoData {
+  name: string;
+  stars: number;
+  forks: number;
+  language: string;
+  languageColor: string;
+}
+
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
+
+export async function fetchTopRepos(username: string): Promise<TopRepoData[]> {
+  const query = `
+    query topRepos($login: String!) {
+      user(login: $login) {
+        repositories(first: 5, ownerAffiliations: OWNER, orderBy: {field: STARGAZERS, direction: DESC}) {
+          nodes {
+            name
+            stargazerCount
+            forkCount
+            primaryLanguage {
+              name
+              color
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(GITHUB_GRAPHQL_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `bearer ${process.env.GH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      query,
+      variables: { login: username },
+    }),
+  });
+
+  const body = await response.json() as any;
+
+  if (body.errors) {
+    throw new Error(body.errors[0].message || "Error fetching top repos");
+  }
+
+  const user = body.data.user;
+  if (!user) throw new Error("User not found");
+
+  return user.repositories.nodes.map((repo: any) => ({
+    name: repo.name,
+    stars: repo.stargazerCount,
+    forks: repo.forkCount,
+    language: repo.primaryLanguage?.name || "None",
+    languageColor: repo.primaryLanguage?.color || "#333",
+  }));
+}
 
 export async function fetchStreak(username: string): Promise<StreakData> {
   const query = `
