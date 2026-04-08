@@ -3,6 +3,16 @@ import { Theme } from "./themes";
 import { Translations } from "./locales";
 import { minifySVG } from "./utils";
 
+const COMMON_STYLES = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .animate {
+    animation: fadeIn 0.6s ease-out;
+  }
+`;
+
 const RANK_COLORS = {
   BRONZE: "#8d5524",
   SILVER: "#c0c0c0",
