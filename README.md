@@ -7,15 +7,13 @@ A high-performance, serverless API to generate dynamic GitHub statistics cards f
 Here is how the cards look with different themes:
 
 ### Global Stats (Dracula Theme)
-![Stats Preview](https://github-stats-cards-example.vercel.app/stats?username=D-Seonay&theme=dracula)
+![Stats Preview](https://github-stats-cards.matheodelaunay.studio/stats?username=D-Seonay&theme=dracula)
 
 ### Top Languages (GitHub Dark Theme)
-![Top Langs Preview](https://github-stats-cards-example.vercel.app/top-langs?username=D-Seonay&theme=github_dark)
+![Top Langs Preview](https://github-stats-cards.matheodelaunay.studio/top-langs?username=D-Seonay&theme=github_dark)
 
 ### Project Card (Default Theme)
-![Project Preview](https://github-stats-cards-example.vercel.app/repo?username=D-Seonay&repo=github-stats-cards)
-
-> **Note:** Replace `github-stats-cards-example.vercel.app` with your own Vercel deployment URL.
+![Project Preview](https://github-stats-cards.matheodelaunay.studio/repo?username=D-Seonay&repo=github-stats-cards)
 
 ## 🚀 Features
 
@@ -39,17 +37,17 @@ Add your GitHub Personal Access Token (PAT) as an environment variable named `GH
 
 ### Global Stats
 ```markdown
-![Stats](https://your-app.vercel.app/stats?username=yourusername&theme=dark)
+![Stats](https://github-stats-cards.matheodelaunay.studio/stats?username=yourusername&theme=dark)
 ```
 
 ### Top Languages
 ```markdown
-![Top Langs](https://your-app.vercel.app/top-langs?username=yourusername&theme=dracula)
+![Top Langs](https://github-stats-cards.matheodelaunay.studio/top-langs?username=yourusername&theme=dracula)
 ```
 
 ### Project Card
 ```markdown
-![Project](https://your-app.vercel.app/repo?username=yourusername&repo=your-repo&theme=github_dark)
+![Project](https://github-stats-cards.matheodelaunay.studio/repo?username=yourusername&repo=your-repo&theme=github_dark)
 ```
 
 ## 🎨 Available Themes
