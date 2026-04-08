@@ -1,6 +1,38 @@
-import { GithubData, LanguageData, ProjectData } from "./github-fetcher.js";
+import { GithubData, LanguageData, ProjectData, StreakData } from "./github-fetcher.js";
 import { Theme } from "./themes.js";
 import { Translations } from "./locales.js";
+
+export function generateStreakSVG(data: StreakData, theme: Theme): string {
+  const { title_color, text_color, bg_color } = theme;
+
+  return `
+    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        .bold { font: 700 24px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .label { font: 400 12px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; opacity: 0.8; }
+      </style>
+      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      <text x="25" y="35" class="header">Contribution Streak</text>
+      
+      <g transform="translate(25, 80)">
+        <g transform="translate(0, 0)">
+          <text x="0" y="0" class="bold">${data.currentStreak}</text>
+          <text x="0" y="20" class="label">Current Streak</text>
+        </g>
+        <g transform="translate(160, 0)">
+          <text x="0" y="0" class="bold">${data.longestStreak}</text>
+          <text x="0" y="20" class="label">Longest Streak</text>
+        </g>
+        <g transform="translate(320, 0)">
+          <text x="0" y="0" class="bold">${data.totalContributions}</text>
+          <text x="0" y="20" class="label">Total Contributions</text>
+        </g>
+      </g>
+    </svg>
+  `;
+}
 
 export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;

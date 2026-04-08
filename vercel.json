@@ -2,6 +2,7 @@
   "rewrites": [
     { "source": "/stats", "destination": "/api/stats" },
     { "source": "/top-langs", "destination": "/api/top-langs" },
-    { "source": "/repo", "destination": "/api/project" }
+    { "source": "/repo", "destination": "/api/project" },
+    { "source": "/streak", "destination": "/api/streak" }
   ]
 }
