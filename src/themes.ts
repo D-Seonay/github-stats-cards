@@ -30,6 +30,24 @@ export const themes: Record<string, Theme> = {
     text_color: "c9d1d9",
     icon_color: "79c0ff",
   },
+  nord: {
+    bg_color: "2e3440",
+    title_color: "88c0d0",
+    text_color: "d8dee9",
+    icon_color: "81a1c1",
+  },
+  monokai: {
+    bg_color: "272822",
+    title_color: "f92672",
+    text_color: "f8f8f2",
+    icon_color: "a6e22e",
+  },
+  solarized: {
+    bg_color: "002b36",
+    title_color: "268bd2",
+    text_color: "839496",
+    icon_color: "b58900",
+  },
 };
 
 export function getTheme(themeName: string = "light", customBg?: string): Theme {

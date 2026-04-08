@@ -37,13 +37,13 @@ export default function Sidebar({ config, setConfig }: any) {
         <div className="space-y-2">
           <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">02. Visual Theme</label>
           <div className="grid grid-cols-2 gap-2">
-            {['dark', 'matrix', 'silver', 'high-contrast'].map(t => (
+            {['light', 'dark', 'dracula', 'github_dark', 'nord', 'monokai', 'solarized'].map(t => (
               <button 
                 key={t}
                 onClick={() => setConfig({ ...config, theme: t })}
                 className={`border p-2 text-[10px] uppercase font-bold transition-all ${config.theme === t ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
               >
-                {t}
+                {t.replace('_', ' ')}
               </button>
             ))}
           </div>
