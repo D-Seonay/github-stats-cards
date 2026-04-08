@@ -1,6 +1,38 @@
-import { GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher.js";
+import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData } from "./github-fetcher.js";
 import { Theme } from "./themes.js";
 import { Translations } from "./locales.js";
+
+export function generateActivitySVG(data: ActivityData[], theme: Theme): string {
+  const { title_color, text_color, bg_color } = theme;
+
+  const rows = data.map((activity, index) => {
+    const y = index * 25;
+    return `
+      <g transform="translate(0, ${y})">
+        <text x="0" y="0" class="stat bold">${activity.type}</text>
+        <text x="100" y="0" class="stat">${activity.repo.length > 25 ? activity.repo.substring(0, 22) + "..." : activity.repo}</text>
+        <text x="400" y="0" class="stat small text-right" text-anchor="end">${activity.date}</text>
+      </g>
+    `;
+  }).join("");
+
+  return `
+    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+        .small { font-size: 12px; opacity: 0.6; }
+        .bold { font-weight: 700; fill: #${title_color}; }
+      </style>
+      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      <text x="25" y="35" class="header">Recent Activity</text>
+      
+      <g transform="translate(25, 70)">
+        ${rows}
+      </g>
+    </svg>
+  `;
+}
 
 export function generateTopReposSVG(data: TopRepoData[], theme: Theme): string {
   const { title_color, text_color, bg_color } = theme;

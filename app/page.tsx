@@ -18,6 +18,7 @@ export default function Home() {
   const repoUrl = `${baseUrl}/api/project?username=${config.username}&repo=${config.repo}&theme=${config.theme}`;
   const streakUrl = `${baseUrl}/api/streak?username=${config.username}&theme=${config.theme}`;
   const topReposUrl = `${baseUrl}/api/top-repos?username=${config.username}&theme=${config.theme}`;
+  const activityUrl = `${baseUrl}/api/activity?username=${config.username}&theme=${config.theme}`;
 
   return (
     <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
@@ -27,7 +28,8 @@ export default function Home() {
         <PreviewCard title="02. Top Languages" src={langsUrl} />
         <PreviewCard title="03. Contribution Streak" src={streakUrl} />
         <PreviewCard title="04. Top Repositories" src={topReposUrl} />
-        {config.repo && <PreviewCard title="05. Project Card" src={repoUrl} />}
+        <PreviewCard title="05. Recent Activity" src={activityUrl} />
+        {config.repo && <PreviewCard title="06. Project Card" src={repoUrl} />}
         <ThemeGallery config={config} setConfig={setConfig} />
       </main>
     </div>

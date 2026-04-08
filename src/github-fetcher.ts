@@ -39,7 +39,43 @@ export interface TopRepoData {
   languageColor: string;
 }
 
+export interface ActivityData {
+  type: string;
+  repo: string;
+  date: string;
+}
+
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
+
+export async function fetchRecentActivity(username: string): Promise<ActivityData[]> {
+  const response = await fetch(`https://api.github.com/users/${username}/events/public?per_page=5`, {
+    headers: {
+      Authorization: `bearer ${process.env.GH_TOKEN}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error fetching recent activity");
+  }
+
+  const events = await response.json() as any[];
+  
+  return events.map(event => {
+    let type = event.type.replace("Event", "");
+    if (type === "Push") type = "Pushed to";
+    if (type === "PullRequest") type = "Opened PR in";
+    if (type === "Issues") type = "Opened Issue in";
+    if (type === "Create") type = "Created";
+    if (type === "Watch") type = "Starred";
+
+    return {
+      type,
+      repo: event.repo.name.split("/")[1] || event.repo.name,
+      date: new Date(event.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+    };
+  });
+}
 
 export async function fetchTopRepos(username: string): Promise<TopRepoData[]> {
   const query = `
