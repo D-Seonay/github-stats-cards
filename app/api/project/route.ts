@@ -1,5 +1,5 @@
-import { fetchProject } from "@/src/github-fetcher";
-import { generateProjectSVG, generateErrorSVG } from "@/src/svg-generator";
+import { fetchProject, RateLimitError } from "@/src/github-fetcher";
+import { generateProjectSVG, generateErrorSVG, generateRateLimitSVG } from "@/src/svg-generator";
 import { getTheme } from "@/src/themes";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,6 +10,8 @@ export async function GET(request: NextRequest) {
   const theme = searchParams.get("theme");
   const bg_color = searchParams.get("bg_color");
 
+  const themeObj = getTheme(theme || "light", bg_color || undefined);
+
   if (!username || !repo) {
     return new NextResponse(generateErrorSVG("Username and Repo are required"), {
       status: 400,
@@ -19,7 +21,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const data = await fetchProject(username, repo);
-    const themeObj = getTheme(theme || "light", bg_color || undefined);
     const svg = generateProjectSVG(data, themeObj);
 
     return new NextResponse(svg, {
@@ -30,6 +31,12 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: any) {
+    if (error instanceof RateLimitError) {
+      return new NextResponse(generateRateLimitSVG(themeObj), {
+        status: 403,
+        headers: { "Content-Type": "image/svg+xml", "Cache-Control": "no-store" },
+      });
+    }
     return new NextResponse(generateErrorSVG(error.message), {
       status: 500,
       headers: { "Content-Type": "image/svg+xml" },

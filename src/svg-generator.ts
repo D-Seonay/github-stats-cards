@@ -2,6 +2,27 @@ import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRep
 import { Theme } from "./themes";
 import { Translations } from "./locales";
 
+export function generateRateLimitSVG(theme: Theme): string {
+  const { title_color, text_color, bg_color } = theme;
+
+  return `
+    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <style>
+        .header { font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${title_color}; }
+        .stat { font: 400 14px 'Segoe UI', Ubuntu, Sans-Serif; fill: #${text_color}; }
+      </style>
+      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" class="header">Rate Limit Exceeded</text>
+      <text x="50%" y="65%" dominant-baseline="middle" text-anchor="middle" class="stat">
+        GitHub API is temporarily unavailable. 
+      </text>
+      <text x="50%" y="80%" dominant-baseline="middle" text-anchor="middle" class="stat" style="opacity: 0.6; font-size: 12px;">
+        Please try again in a few minutes.
+      </text>
+    </svg>
+  `;
+}
+
 export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations): string {
   const { title_color, text_color, bg_color } = theme;
 
