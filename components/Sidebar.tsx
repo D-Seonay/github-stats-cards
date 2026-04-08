@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { themes } from "@/src/themes";
 
 export default function Sidebar({ config, setConfig }: any) {
   const [repos, setRepos] = useState<string[]>([]);
@@ -19,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v1.4.0-alpha.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v1.5.0-alpha.stealth</p>
       </div>
 
       <div className="space-y-6">
@@ -37,13 +38,22 @@ export default function Sidebar({ config, setConfig }: any) {
         <div className="space-y-2">
           <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">02. Visual Theme</label>
           <div className="grid grid-cols-2 gap-2">
-            {['light', 'dark', 'dracula', 'github_dark', 'nord', 'monokai', 'solarized'].map(t => (
+            {Object.entries(themes).map(([key, value]) => (
               <button 
-                key={t}
-                onClick={() => setConfig({ ...config, theme: t })}
-                className={`border p-2 text-[10px] uppercase font-bold transition-all ${config.theme === t ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+                key={key}
+                onClick={() => setConfig({ ...config, theme: key })}
+                className={`group border p-2 text-[10px] uppercase font-bold transition-all flex items-center gap-2 ${config.theme === key ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
               >
-                {t.replace('_', ' ')}
+                <div 
+                  className="w-3 h-3 rounded-full border border-zinc-700 shrink-0 transition-transform group-hover:scale-110" 
+                  style={{ backgroundColor: `#${value.bg_color}` }}
+                >
+                  <div 
+                    className="w-full h-full rounded-full opacity-50" 
+                    style={{ backgroundColor: `#${value.title_color}`, clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }}
+                  />
+                </div>
+                <span className="truncate">{key.replace('_', ' ')}</span>
               </button>
             ))}
           </div>
