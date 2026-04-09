@@ -64,7 +64,7 @@ export interface Trophy {
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
-export function calculateTrophies(data: GithubData, activity: ActivityData[] = []): Trophy[] {
+export function calculateTrophies(data: GithubData, activity: ActivityData[] = [], streak: StreakData | null = null): Trophy[] {
   const tiers = {
     stars: [10, 50, 100, 500, 1000],
     commits: [100, 500, 1000, 5000, 10000],
@@ -89,12 +89,22 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
     { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
   ];
 
+  // --- Secret Trophies (Hard to Impossible) ---
+  
   if (data.totalStars > 50 && data.followers < 5) {
     trophies.push({ title: "Ghost", value: "Rare", rank: "SECRET" });
   }
 
   if (data.totalRepos > 100) {
     trophies.push({ title: "Architect", value: "Elite", rank: "SECRET" });
+  }
+
+  if (streak && streak.longestStreak >= 100) {
+    trophies.push({ title: "Century", value: "Elite", rank: "SECRET" });
+  }
+
+  if (streak && streak.longestStreak >= 365) {
+    trophies.push({ title: "Survivor", value: "Mythic", rank: "SECRET" });
   }
 
   if (data.totalStars >= 10000) {

@@ -1,4 +1,4 @@
-import { fetchStats, calculateTrophies, RateLimitError, fetchRecentActivity } from "@/src/github-fetcher";
+import { fetchStats, calculateTrophies, RateLimitError, fetchRecentActivity, fetchStreak } from "@/src/github-fetcher";
 import { generateTrophySVG, generateErrorSVG, generateRateLimitSVG } from "@/src/svg-generator";
 import { getTheme } from "@/src/themes";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,12 +21,13 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const [statsData, activityData] = await Promise.all([
+    const [statsData, activityData, streakData] = await Promise.all([
       fetchStats(username),
-      fetchRecentActivity(username).catch(() => [])
+      fetchRecentActivity(username).catch(() => []),
+      fetchStreak(username).catch(() => null)
     ]);
 
-    const trophies = calculateTrophies(statsData, activityData);
+    const trophies = calculateTrophies(statsData, activityData, streakData);
     const svg = generateTrophySVG(trophies, themeObj, custom_css, font);
 
     return new NextResponse(svg, {
