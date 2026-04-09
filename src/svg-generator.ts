@@ -30,7 +30,7 @@ function getFontStyles(font?: string) {
   }
   const fontName = font.replace(/\+/g, " ");
   return {
-    import: `@import url('https://fonts.googleapis.com/css2?family=${font.replace(/ /g, "+")}&display=swap');`,
+    import: `@import url('https://fonts.googleapis.com/css2?family=${font.replace(/ /g, "+")}&amp;display=swap');`,
     family: `'${fontName}', Sans-Serif`,
   };
 }
