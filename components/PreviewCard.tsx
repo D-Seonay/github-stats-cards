@@ -1,14 +1,16 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, Copy, Share2, FileCode } from "lucide-react";
+import { Check, Copy, Share2, FileCode, AlertTriangle } from "lucide-react";
 
 export default function PreviewCard({ title, src }: { title: string, src: string }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
+    setIsError(false);
   }, [src]);
 
   const copyToClipboard = (text: string) => {
@@ -40,26 +42,41 @@ export default function PreviewCard({ title, src }: { title: string, src: string
       <div className="flex justify-between items-end border-b border-zinc-900 pb-2">
         <h2 className="text-[10px] uppercase tracking-[0.3em] font-black italic text-zinc-400">{title}</h2>
         
-        <AnimatePresence>
-          {copied && (
-            <motion.div 
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 10 }}
-              className="flex items-center gap-2 text-[10px] text-emerald-400 font-bold uppercase tracking-widest"
-            >
-              <Check size={12} />
-              Copied to clipboard
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="flex items-center gap-4">
+          <AnimatePresence>
+            {isError && (
+              <motion.div 
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="flex items-center gap-2 text-[10px] text-red-400 font-bold uppercase tracking-widest"
+              >
+                <AlertTriangle size={12} />
+                Failed to load resource
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          <AnimatePresence>
+            {copied && (
+              <motion.div 
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 10 }}
+                className="flex items-center gap-2 text-[10px] text-emerald-400 font-bold uppercase tracking-widest"
+              >
+                <Check size={12} />
+                Copied to clipboard
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
       
       <div className="w-full bg-zinc-900/30 border border-dashed border-zinc-800 flex items-center justify-center relative group min-h-[200px] overflow-hidden">
         
         {/* Skeleton / Phantom Card */}
         <AnimatePresence>
-          {isLoading && (
+          {isLoading && !isError && (
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -76,14 +93,28 @@ export default function PreviewCard({ title, src }: { title: string, src: string
           )}
         </AnimatePresence>
 
+        {/* Error Overlay */}
+        {isError && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-zinc-950/50 backdrop-blur-sm">
+            <AlertTriangle className="text-red-500" size={32} />
+            <p className="text-[10px] text-zinc-400 uppercase font-bold">Rendering Engine Error</p>
+          </div>
+        )}
+
         <motion.img 
           key={src}
           src={src} 
           alt={title} 
-          onLoad={() => setIsLoading(false)}
-          onError={() => setIsLoading(false)}
+          onLoad={() => {
+            setIsLoading(false);
+            setIsError(false);
+          }}
+          onError={() => {
+            setIsLoading(false);
+            setIsError(true);
+          }}
           initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: isLoading ? 0 : 1, scale: isLoading ? 0.98 : 1 }}
+          animate={{ opacity: (isLoading || isError) ? 0 : 1, scale: (isLoading || isError) ? 0.98 : 1 }}
           transition={{ duration: 0.5 }}
           className="max-w-full h-auto shadow-2xl z-0" 
         />

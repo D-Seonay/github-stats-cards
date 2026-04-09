@@ -20,7 +20,7 @@ export default function Sidebar({ config, setConfig }: any) {
     <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono overflow-y-auto scrollbar-hide">
       <div className="space-y-1">
         <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v2.8.2-stable.stealth</p>
+        <p className="text-[10px] text-zinc-500 italic">// v2.8.3-stable.stealth</p>
       </div>
 
       <div className="space-y-6">
