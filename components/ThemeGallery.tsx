@@ -42,11 +42,14 @@ export default function ThemeGallery({ config, setConfig }: any) {
                   <span className="text-[8px] bg-zinc-100 text-zinc-950 px-1 font-black uppercase">Active</span>
                 )}
               </div>
-              <img 
-                src={previewUrl} 
-                alt={`${t} theme preview`} 
+              <object 
+                key={previewUrl}
+                data={previewUrl} 
+                type="image/svg+xml"
                 className="w-full h-auto shadow-lg pointer-events-none" 
-              />
+              >
+                <img src={previewUrl} alt={`${t} theme preview`} />
+              </object>
             </motion.div>
           );
         })}

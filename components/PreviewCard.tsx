@@ -101,23 +101,21 @@ export default function PreviewCard({ title, src }: { title: string, src: string
           </div>
         )}
 
-        <motion.img 
-          key={src}
-          src={src} 
-          alt={title} 
-          onLoad={() => {
-            setIsLoading(false);
-            setIsError(false);
-          }}
-          onError={() => {
-            setIsLoading(false);
-            setIsError(true);
-          }}
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: (isLoading || isError) ? 0 : 1, scale: (isLoading || isError) ? 0.98 : 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-full h-auto shadow-2xl z-0" 
-        />
+        <div className={`w-full flex items-center justify-center transition-all duration-500 ${isLoading || isError ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+          <object 
+            key={src}
+            data={src} 
+            type="image/svg+xml"
+            onLoad={() => {
+              setIsLoading(false);
+              setIsError(false);
+            }}
+            className="max-w-full h-auto shadow-2xl z-0 pointer-events-none"
+          >
+            {/* Fallback for browsers that don't support <object> for SVGs */}
+            <img src={src} alt={title} />
+          </object>
+        </div>
 
         <div className="absolute inset-0 bg-zinc-950/90 opacity-0 group-hover:opacity-100 transition-opacity flex flex-wrap items-center justify-center gap-2 p-4 z-20">
           <button 
