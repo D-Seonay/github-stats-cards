@@ -91,10 +91,15 @@ export default function LandingPage() {
           className="mt-32 text-center text-zinc-600 text-xs font-mono border-t border-zinc-900 pt-8"
         >
           <p>Built with Next.js 14, Tailwind CSS, and Vercel Serverless Functions.</p>
-          <div className="mt-4 space-x-4">
+          <div className="mt-4 flex justify-center items-center gap-4">
             <a href="https://github.com/D-Seonay/github-stats-cards" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">GitHub Repository</a>
             <span>//</span>
             <a href="https://github.com/D-Seonay" target="_blank" rel="noopener noreferrer" className="hover:text-zinc-300 transition-colors">@D-Seonay</a>
+            <span>//</span>
+            <Link href="/status" className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors group">
+              <div className="w-1 h-1 rounded-full bg-emerald-500 group-hover:animate-pulse" />
+              System Status
+            </Link>
           </div>
         </motion.footer>
       </div>
