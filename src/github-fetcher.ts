@@ -7,6 +7,8 @@ export interface GithubData {
   totalIssues: number;
   totalRepos: number;
   contributedTo: number;
+  followers: number;
+  gists: number;
 }
 
 export interface LanguageData {
@@ -95,11 +97,7 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
   }
 
   // Night Owl: Committed late (from activity)
-  const hasNightlyActivity = activity.some(a => {
-    // This is just a simulation based on mock or simplified data 
-    // since activity dates in this project are currently strings like "Apr 9"
-    return false; // placeholder for now
-  });
+  // (Placeholder logic for now as activity feed is limited)
 
   // Long-running project
   if (data.totalRepos > 50) {
@@ -345,6 +343,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
       user(login: $login) {
         name
         login
+        followers { totalCount }
+        gists { totalCount }
         contributionsCollection {
           totalCommitContributions
           restrictedContributionsCount
@@ -391,6 +391,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
     totalIssues: user.issues.totalCount,
     totalRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
+    followers: user.followers.totalCount,
+    gists: user.gists.totalCount,
   };
 }
 
