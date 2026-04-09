@@ -1,4 +1,4 @@
-import { fetchStats, calculateTrophies, RateLimitError } from "@/src/github-fetcher";
+import { fetchStats, calculateTrophies, RateLimitError, fetchRecentActivity } from "@/src/github-fetcher";
 import { generateTrophySVG, generateErrorSVG, generateRateLimitSVG } from "@/src/svg-generator";
 import { getTheme } from "@/src/themes";
 import { NextRequest, NextResponse } from "next/server";
@@ -21,8 +21,12 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const statsData = await fetchStats(username);
-    const trophies = calculateTrophies(statsData);
+    const [statsData, activityData] = await Promise.all([
+      fetchStats(username),
+      fetchRecentActivity(username).catch(() => [])
+    ]);
+
+    const trophies = calculateTrophies(statsData, activityData);
     const svg = generateTrophySVG(trophies, themeObj, custom_css, font);
 
     return new NextResponse(svg, {
@@ -34,7 +38,7 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     if (error instanceof RateLimitError) {
-      return new NextResponse(generateRateLimitSVG(themeObj), {
+      return new NextResponse(generateRateLimitSVG(themeObj, custom_css), {
         status: 403,
         headers: { "Content-Type": "image/svg+xml", "Cache-Control": "no-store" },
       });

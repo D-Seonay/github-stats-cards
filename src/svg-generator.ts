@@ -13,12 +13,13 @@ const COMMON_STYLES = `
   }
 `;
 
-const RANK_COLORS = {
+const RANK_COLORS: Record<string, string> = {
   BRONZE: "#8d5524",
   SILVER: "#c0c0c0",
   GOLD: "#ffd700",
   PLATINUM: "#e5e4e2",
   DIAMOND: "#b9f2ff",
+  SECRET: "#ff00ff",
 };
 
 function getFontStyles(font?: string) {
@@ -56,13 +57,17 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
   const trophyIcons = trophies.map((t, index) => {
     const x = (index % 3) * 150;
     const y = Math.floor(index / 3) * 70;
-    const color = RANK_COLORS[t.rank];
+    const color = RANK_COLORS[t.rank] || "#333";
     const delay = 300 + (index * 100);
+
+    const iconPath = t.rank === "SECRET" 
+      ? "M20 8 L32 20 L20 32 L8 20 Z" 
+      : "M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z";
 
     return `
       <g transform="translate(${x}, ${y})" class="animate" style="animation-delay: ${delay}ms">
         <circle cx="20" cy="20" r="18" fill="${color}" opacity="0.2" />
-        <path d="M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z" fill="${color}" />
+        <path d="${iconPath}" fill="${color}" />
         <text x="45" y="18" class="stat bold" style="fill: ${color}">${t.title}</text>
         <text x="45" y="32" class="stat small" style="fill: #${text_color}">${t.rank} (${t.value})</text>
       </g>

@@ -56,13 +56,13 @@ export interface OrgData {
 
 export interface Trophy {
   title: string;
-  rank: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND";
-  value: number;
+  rank: "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND" | "SECRET";
+  value: number | string;
 }
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
-export function calculateTrophies(data: GithubData): Trophy[] {
+export function calculateTrophies(data: GithubData, activity: ActivityData[] = []): Trophy[] {
   const tiers = {
     stars: [10, 50, 100, 500, 1000],
     commits: [100, 500, 1000, 5000, 10000],
@@ -79,13 +79,34 @@ export function calculateTrophies(data: GithubData): Trophy[] {
     return "BRONZE";
   };
 
-  return [
+  const trophies: Trophy[] = [
     { title: "Stars", value: data.totalStars, rank: getRank(data.totalStars, tiers.stars) },
     { title: "Commits", value: data.totalCommits, rank: getRank(data.totalCommits, tiers.commits) },
     { title: "PRs", value: data.totalPRs, rank: getRank(data.totalPRs, tiers.prs) },
     { title: "Issues", value: data.totalIssues, rank: getRank(data.totalIssues, tiers.issues) },
     { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
   ];
+
+  // --- Easter Eggs ---
+  
+  // Ghost: High Stars, low followers
+  if (data.totalStars > 50 && data.followers < 5) {
+    trophies.push({ title: "Ghost", value: "Rare", rank: "SECRET" });
+  }
+
+  // Night Owl: Committed late (from activity)
+  const hasNightlyActivity = activity.some(a => {
+    // This is just a simulation based on mock or simplified data 
+    // since activity dates in this project are currently strings like "Apr 9"
+    return false; // placeholder for now
+  });
+
+  // Long-running project
+  if (data.totalRepos > 50) {
+    trophies.push({ title: "Architect", value: "Pro", rank: "SECRET" });
+  }
+
+  return trophies;
 }
 
 export class RateLimitError extends Error {
