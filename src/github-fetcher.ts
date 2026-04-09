@@ -103,12 +103,24 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
     trophies.push({ title: "Starlight Legend", value: "Mythic", rank: "SECRET" });
   }
 
+  if (data.totalStars >= 50000) {
+    trophies.push({ title: "Starlight God", value: "Ethereal", rank: "SECRET" });
+  }
+
   if (data.totalCommits >= 50000) {
     trophies.push({ title: "God Committer", value: "Divine", rank: "SECRET" });
   }
 
+  if (data.totalCommits >= 100000) {
+    trophies.push({ title: "Commit Deity", value: "Transcendent", rank: "SECRET" });
+  }
+
   if (data.contributedTo >= 500) {
     trophies.push({ title: "Titan", value: "Colossal", rank: "SECRET" });
+  }
+
+  if (data.contributedTo >= 1000) {
+    trophies.push({ title: "World Class", value: "Universal", rank: "SECRET" });
   }
 
   return trophies;

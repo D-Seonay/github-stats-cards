@@ -4,7 +4,7 @@
 - **Name:** STAT-STATS
 - **Purpose:** Serverless API generating high-tech, dynamic GitHub stats cards for READMEs.
 - **URL:** [github-stats-cards.matheodelaunay.studio](https://github-stats-cards.matheodelaunay.studio)
-- **Current Version:** `v2.8.1-stable.stealth`
+- **Current Version:** `v3.1.0-stable.stealth`
 
 ## 🛠️ Tech Stack
 - **Framework:** Next.js 14 (App Router)
@@ -17,19 +17,25 @@
 
 ## 🎴 Feature List
 - **Cards:** Stats (Global), Top Langs, Streak, Top Repos, Recent Activity, Trophies, Org Stats, Project card.
+- **Achievement System (v3.1):** 
+  - Dual-section layout: "Prime Achievements" and "Hidden Vault".
+  - Legendary Trophies: Mythic, Divine, Transcendent, Colossal, Universal tiers.
+  - Secret Easter Eggs: Ghost, Architect.
 - **Customization:** 
   - 7 Themes + `terminal` (with CRT scanline overlay).
   - Multi-language (EN, FR, ES, DE, JP).
   - Custom CSS injection & Google Fonts support.
   - Compact Mode & Selective Hiding of stats.
+- **Monitoring:** Dedicated `/status` page with real-time health checks.
 - **Performance:** XML/SVG Minification, Cache-Control (2h browser / 24h edge).
 - **Console:** Client-side debouncing (500ms), LocalStorage persistence, Skeleton loaders, Toast notifications.
 
 ## ⚠️ Critical Fixes & Decisions
-- **Streak Logic:** Refactored to a "Backward Search" algorithm using UTC ISO dates to handle timezones and daily timing accurately (Total streak coverage).
-- **PAT Permissions:** Removed `repositoryDiscussions` and Organization `membersWithRole` fields to ensure compatibility with standard Personal Access Tokens (avoiding "resource not accessible" errors).
-- **Vercel Build:** Moved API from root `/api` to `app/api` to allow Next.js compiler to resolve path aliases (`@/`).
-- **SVG Rendering:** Removed `transform` and `opacity: 0` from initial states to prevent "dead cards" on restrictive SVG renderers (like GitHub Camo). Content is now visible by default.
+- **SVG Font Rendering:** Switched from `<img>` to `<object>` in the console preview to bypass browser security sandboxing and allow external Google Font loading.
+- **Streak Logic:** Refactored to a "Backward Search" algorithm using UTC ISO dates to handle timezones and daily timing accurately.
+- **PAT Permissions:** Removed `repositoryDiscussions` and Organization `membersWithRole` fields. Added null-safe checks for `followers` and `gists` to ensure 100% card availability even with restricted tokens.
+- **Dynamic Layout:** Implemented calculated SVG height logic in `generateStatsSVG` and `generateTrophySVG` to prevent clipping when social stats or secret trophies are active.
+- **XML Safety:** Escaped `&` into `&amp;` in Google Fonts URLs to prevent SVG parsing errors.
 
 ## 🚀 Infrastructure
 - **CI/CD:** GitHub Actions (`.github/workflows/ci.yml`) running lint, type-check, and tests.

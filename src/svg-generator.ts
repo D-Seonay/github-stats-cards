@@ -276,8 +276,13 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
     { key: "gists", label: translations.gists, value: data.gists },
   ].filter(s => !hide.includes(s.key));
 
-  const height = compact ? Math.max(100, 45 + stats.length * 25) : 195;
+  const headerHeight = 65;
   const rowHeight = 25;
+  const paddingBottom = 30;
+  const minHeight = 195;
+  
+  const calculatedHeight = headerHeight + (stats.length * rowHeight) + paddingBottom;
+  const height = compact ? Math.max(100, calculatedHeight - 40) : Math.max(minHeight, calculatedHeight);
 
   const rows = stats.map((stat, index) => {
     const y = index * rowHeight;
