@@ -54,28 +54,46 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
   const { title_color, bg_color, text_color } = theme;
   const fontStyles = getFontStyles(font);
 
-  const trophyIcons = trophies.map((t, index) => {
-    const x = (index % 3) * 150;
-    const y = Math.floor(index / 3) * 70;
-    const color = RANK_COLORS[t.rank] || "#333";
-    const delay = 300 + (index * 100);
+  const standard = trophies.filter(t => t.rank !== "SECRET");
+  const secrets = trophies.filter(t => t.rank === "SECRET");
 
-    const iconPath = t.rank === "SECRET" 
-      ? "M20 8 L32 20 L20 32 L8 20 Z" 
-      : "M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z";
+  const renderTrophies = (list: Trophy[], startY: number) => {
+    return list.map((t, index) => {
+      const x = (index % 3) * 150;
+      const y = startY + Math.floor(index / 3) * 70;
+      const color = RANK_COLORS[t.rank] || "#333";
+      const delay = 300 + (index * 100);
 
-    return `
-      <g transform="translate(${x}, ${y})" class="animate" style="animation-delay: ${delay}ms">
-        <circle cx="20" cy="20" r="18" fill="${color}" opacity="0.2" />
-        <path d="${iconPath}" fill="${color}" />
-        <text x="45" y="18" class="stat bold" style="fill: ${color}">${t.title}</text>
-        <text x="45" y="32" class="stat small" style="fill: #${text_color}">${t.rank} (${t.value})</text>
-      </g>
+      const iconPath = t.rank === "SECRET" 
+        ? "M20 8 L32 20 L20 32 L8 20 Z" 
+        : "M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z";
+
+      return `
+        <g transform="translate(${x}, ${y})" class="animate" style="animation-delay: ${delay}ms">
+          <circle cx="20" cy="20" r="18" fill="${color}" opacity="0.2" />
+          <path d="${iconPath}" fill="${color}" />
+          <text x="45" y="18" class="stat bold" style="fill: ${color}">${t.title}</text>
+          <text x="45" y="32" class="stat small" style="fill: #${text_color}">${t.rank} (${t.value})</text>
+        </g>
+      `;
+    }).join("");
+  };
+
+  const standardContent = renderTrophies(standard, 65);
+  let secretContent = "";
+  let totalHeight = 195;
+
+  if (secrets.length > 0) {
+    const secretStartY = 65 + Math.ceil(standard.length / 3) * 70 + 20;
+    secretContent = `
+      <text x="25" y="${secretStartY - 15}" class="header animate" style="font-size: 14px; opacity: 0.6">// Hidden Vault</text>
+      ${renderTrophies(secrets, secretStartY)}
     `;
-  }).join("");
+    totalHeight = secretStartY + Math.ceil(secrets.length / 3) * 70 + 20;
+  }
 
   return minifySVG(`
-    <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="495" height="${totalHeight}" viewBox="0 0 495 ${totalHeight}" fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
         ${fontStyles.import}
         ${COMMON_STYLES}
@@ -86,11 +104,10 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
         .bold { font-weight: 700; }
         ${customCSS || ""}
       </style>
-      <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate">Achievement Trophies</text>
-      <g transform="translate(25, 65)">
-        ${trophyIcons}
-      </g>
+      <rect x="0.5" y="0.5" width="494" height="${totalHeight - 1}" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
+      <text x="25" y="35" class="header animate">Prime Achievements</text>
+      ${standardContent}
+      ${secretContent}
       ${getTerminalOverlay(theme)}
     </svg>
   `);
@@ -255,6 +272,8 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
     { key: "prs", label: translations.totalPRs, value: data.totalPRs },
     { key: "issues", label: translations.totalIssues, value: data.totalIssues },
     { key: "contribs", label: translations.contributedTo, value: data.contributedTo },
+    { key: "followers", label: translations.followers, value: data.followers },
+    { key: "gists", label: translations.gists, value: data.gists },
   ].filter(s => !hide.includes(s.key));
 
   const height = compact ? Math.max(100, 45 + stats.length * 25) : 195;

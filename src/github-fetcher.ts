@@ -89,19 +89,26 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
     { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
   ];
 
-  // --- Easter Eggs ---
+  // --- Secret Trophies (Hard to Impossible) ---
   
-  // Ghost: High Stars, low followers
   if (data.totalStars > 50 && data.followers < 5) {
     trophies.push({ title: "Ghost", value: "Rare", rank: "SECRET" });
   }
 
-  // Night Owl: Committed late (from activity)
-  // (Placeholder logic for now as activity feed is limited)
+  if (data.totalRepos > 100) {
+    trophies.push({ title: "Architect", value: "Elite", rank: "SECRET" });
+  }
 
-  // Long-running project
-  if (data.totalRepos > 50) {
-    trophies.push({ title: "Architect", value: "Pro", rank: "SECRET" });
+  if (data.totalStars >= 10000) {
+    trophies.push({ title: "Starlight Legend", value: "Mythic", rank: "SECRET" });
+  }
+
+  if (data.totalCommits >= 50000) {
+    trophies.push({ title: "God Committer", value: "Divine", rank: "SECRET" });
+  }
+
+  if (data.contributedTo >= 500) {
+    trophies.push({ title: "Titan", value: "Colossal", rank: "SECRET" });
   }
 
   return trophies;
@@ -343,6 +350,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
       user(login: $login) {
         name
         login
+        followers { totalCount }
+        gists { totalCount }
         contributionsCollection {
           totalCommitContributions
           restrictedContributionsCount
@@ -389,8 +398,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
     totalIssues: user.issues.totalCount,
     totalRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
-    followers: 0,
-    gists: 0,
+    followers: user.followers.totalCount,
+    gists: user.gists.totalCount,
   };
 }
 
