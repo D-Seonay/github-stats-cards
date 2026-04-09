@@ -45,7 +45,7 @@ export default function ConsolePage() {
       setDebouncedConfig(config);
     }, 500);
     return () => clearTimeout(timer);
-  }, [config.username, config.hide, config.compact, config.customCSS, config.org, config.font]);
+  }, [config.username, config.hide, config.compact, config.customCSS, config.org, config.font, config.repo]);
 
   const baseUrl = ""; 
   const cssParam = config.customCSS ? `&custom_css=${encodeURIComponent(config.customCSS)}` : "";
@@ -53,7 +53,7 @@ export default function ConsolePage() {
   
   const statsUrl = `${baseUrl}/api/stats?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}&compact=${config.compact}&hide=${config.hide.join(",")}${cssParam}${fontParam}`;
   const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}${fontParam}`;
-  const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${config.repo}&theme=${config.theme}${cssParam}${fontParam}`;
+  const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${debouncedConfig.repo}&theme=${config.theme}${cssParam}${fontParam}`;
   const streakUrl = `${baseUrl}/api/streak?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}${fontParam}`;
   const topReposUrl = `${baseUrl}/api/top-repos?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}${fontParam}`;
   const activityUrl = `${baseUrl}/api/activity?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}${fontParam}`;

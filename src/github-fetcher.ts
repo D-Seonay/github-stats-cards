@@ -89,8 +89,6 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
     { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
   ];
 
-  // --- Secret Trophies (Hard to Impossible) ---
-  
   if (data.totalStars > 50 && data.followers < 5) {
     trophies.push({ title: "Ghost", value: "Rare", rank: "SECRET" });
   }
@@ -139,6 +137,18 @@ async function githubFetch(url: string, options: any) {
     throw new RateLimitError();
   }
   return response;
+}
+
+function handleGqlErrors(body: any, dataKey: string) {
+  if (body.errors && !body.data?.[dataKey]) {
+    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
+      throw new RateLimitError();
+    }
+    throw new Error(body.errors[0].message);
+  }
+  const data = body.data?.[dataKey];
+  if (!data) throw new Error(`${dataKey} not found`);
+  return data;
 }
 
 export async function fetchRecentActivity(username: string): Promise<ActivityData[]> {
@@ -199,16 +209,8 @@ export async function fetchTopRepos(username: string): Promise<TopRepoData[]> {
     body: JSON.stringify({ query, variables: { login: username } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const user = body.data.user;
-  if (!user) throw new Error("User not found");
+  const body = await response.json();
+  const user = handleGqlErrors(body, "user");
 
   return user.repositories.nodes.map((repo: any) => ({
     name: repo.name,
@@ -249,21 +251,12 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     body: JSON.stringify({ query, variables: { login: username } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const user = body.data.user;
-  if (!user) throw new Error("User not found");
+  const body = await response.json();
+  const user = handleGqlErrors(body, "user");
 
   const calendar = user.contributionsCollection.contributionCalendar;
   const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
   
-  // Count backwards from today
   const todayStr = new Date().toISOString().split('T')[0];
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
@@ -274,13 +267,10 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     .sort((a: any, b: any) => b.date.localeCompare(a.date));
 
   let currentStreak = 0;
-  
-  // Find where the streak starts: either today or yesterday must have contributions
   const latestContributionIndex = sortedPastDays.findIndex((d: any) => d.contributionCount > 0);
   
   if (latestContributionIndex !== -1) {
     const latestDate = sortedPastDays[latestContributionIndex].date;
-    // If the latest contribution is today or yesterday, the streak is alive
     if (latestDate === todayStr || latestDate === yesterdayStr) {
       for (let i = latestContributionIndex; i < sortedPastDays.length; i++) {
         if (sortedPastDays[i].contributionCount > 0) {
@@ -292,7 +282,6 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     }
   }
 
-  // Longest Streak calculation (chronological)
   const chronologicalDays = [...days].sort((a: any, b: any) => a.date.localeCompare(b.date));
   let longestStreak = 0;
   let tempStreak = 0;
@@ -335,16 +324,8 @@ export async function fetchProject(owner: string, name: string): Promise<Project
     body: JSON.stringify({ query, variables: { owner, name } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const repo = body.data.repository;
-  if (!repo) throw new Error("Repository not found");
+  const body = await response.json();
+  const repo = handleGqlErrors(body, "repository");
 
   return {
     name: repo.name,
@@ -388,16 +369,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
     body: JSON.stringify({ query, variables: { login: username } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const user = body.data.user;
-  if (!user) throw new Error("User not found");
+  const body = await response.json();
+  const user = handleGqlErrors(body, "user");
 
   const totalStars = user.repositories.nodes.reduce((acc: number, repo: any) => acc + repo.stargazers.totalCount, 0);
 
@@ -442,16 +415,8 @@ export async function fetchTopLanguages(username: string): Promise<LanguageData[
     body: JSON.stringify({ query, variables: { login: username } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const user = body.data.user;
-  if (!user) throw new Error("User not found");
+  const body = await response.json();
+  const user = handleGqlErrors(body, "user");
 
   const langMap: Record<string, { size: number; color: string }> = {};
   user.repositories.nodes.forEach((repo: any) => {
@@ -491,16 +456,8 @@ export async function fetchOrgStats(org: string): Promise<OrgData> {
     body: JSON.stringify({ query, variables: { login: org } }),
   });
 
-  const body = await response.json() as any;
-  if (body.errors) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
-      throw new RateLimitError();
-    }
-    throw new Error(body.errors[0].message);
-  }
-
-  const organization = body.data.organization;
-  if (!organization) throw new Error("Organization not found");
+  const body = await response.json();
+  const organization = handleGqlErrors(body, "organization");
 
   const totalStars = organization.repositories.nodes.reduce((acc: number, repo: any) => acc + repo.stargazerCount, 0);
 
