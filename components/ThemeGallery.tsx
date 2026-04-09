@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 
 export default function ThemeGallery({ config, setConfig }: any) {
   const themeKeys = Object.keys(themes);
+  const cssParam = config.customCSS ? `&custom_css=${encodeURIComponent(config.customCSS)}` : "";
+  const fontParam = config.font ? `&font=${encodeURIComponent(config.font)}` : "";
 
   return (
     <section id="gallery" className="space-y-8 pt-12 border-t border-zinc-900">
@@ -14,7 +16,7 @@ export default function ThemeGallery({ config, setConfig }: any) {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {themeKeys.map((t) => {
-          const previewUrl = `/api/stats?username=${config.username}&theme=${t}&locale=${config.locale}`;
+          const previewUrl = `/api/stats?username=${config.username}&theme=${t}&locale=${config.locale}${cssParam}${fontParam}`;
           const isSelected = config.theme === t;
 
           return (
