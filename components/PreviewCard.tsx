@@ -81,6 +81,7 @@ export default function PreviewCard({ title, src }: { title: string, src: string
           src={src} 
           alt={title} 
           onLoad={() => setIsLoading(false)}
+          onError={() => setIsLoading(false)}
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: isLoading ? 0 : 1, scale: isLoading ? 0.98 : 1 }}
           transition={{ duration: 0.5 }}
