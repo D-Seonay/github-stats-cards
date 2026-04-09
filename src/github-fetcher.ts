@@ -343,8 +343,6 @@ export async function fetchStats(username: string): Promise<GithubData> {
       user(login: $login) {
         name
         login
-        followers { totalCount }
-        gists { totalCount }
         contributionsCollection {
           totalCommitContributions
           restrictedContributionsCount
@@ -391,8 +389,8 @@ export async function fetchStats(username: string): Promise<GithubData> {
     totalIssues: user.issues.totalCount,
     totalRepos: user.repositories.totalCount,
     contributedTo: user.repositoriesContributedTo.totalCount,
-    followers: user.followers.totalCount,
-    gists: user.gists.totalCount,
+    followers: 0,
+    gists: 0,
   };
 }
 
