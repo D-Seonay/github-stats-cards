@@ -45,12 +45,24 @@ export default function ConsolePage() {
       setDebouncedConfig(config);
     }, 500);
     return () => clearTimeout(timer);
-  }, [config.username, config.hide, config.compact, config.customCSS, config.org, config.font, config.repo]);
+  }, [
+    config.username,
+    config.hide,
+    config.compact,
+    config.customCSS,
+    config.org,
+    config.font,
+    config.repo,
+  ]);
 
-  const baseUrl = ""; 
-  const cssParam = config.customCSS ? `&custom_css=${encodeURIComponent(config.customCSS)}` : "";
-  const fontParam = config.font ? `&font=${encodeURIComponent(config.font)}` : "";
-  
+  const baseUrl = "";
+  const cssParam = config.customCSS
+    ? `&custom_css=${encodeURIComponent(config.customCSS)}`
+    : "";
+  const fontParam = config.font
+    ? `&font=${encodeURIComponent(config.font)}`
+    : "";
+
   const statsUrl = `${baseUrl}/api/stats?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}&compact=${config.compact}&hide=${config.hide.join(",")}${cssParam}${fontParam}`;
   const langsUrl = `${baseUrl}/api/top-langs?username=${debouncedConfig.username}&theme=${config.theme}&locale=${config.locale}${cssParam}${fontParam}`;
   const repoUrl = `${baseUrl}/api/project?username=${debouncedConfig.username}&repo=${debouncedConfig.repo}&theme=${config.theme}${cssParam}${fontParam}`;
@@ -61,9 +73,9 @@ export default function ConsolePage() {
   const orgUrl = `${baseUrl}/api/org?username=${debouncedConfig.org}&theme=${config.theme}${cssParam}${fontParam}`;
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
+    <div className="flex flex-col lg:flex-row h-screen bg-zinc-950 text-zinc-100 font-mono overflow-hidden">
       <Sidebar config={config} setConfig={setConfig} />
-      <main className="flex-1 p-12 overflow-y-auto space-y-12">
+      <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-y-auto space-y-12">
         <PreviewCard title="01. User Statistics" src={statsUrl} />
         <PreviewCard title="02. Top Languages" src={langsUrl} />
         <PreviewCard title="03. Contribution Streak" src={streakUrl} />
