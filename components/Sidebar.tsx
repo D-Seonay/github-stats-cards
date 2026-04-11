@@ -8,67 +8,79 @@ export default function Sidebar({ config, setConfig }: any) {
   useEffect(() => {
     if (config.username) {
       fetch(`/api/github/repos?username=${config.username}`)
-        .then(res => res.json())
-        .then(data => {
+        .then((res) => res.json())
+        .then((data) => {
           setRepos(data);
-          if (data.length > 0 && !config.repo) setConfig({ ...config, repo: data[0] });
+          if (data.length > 0 && !config.repo)
+            setConfig({ ...config, repo: data[0] });
         });
     }
   }, [config.username]);
 
   return (
-    <aside className="w-80 border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-screen font-mono overflow-y-auto scrollbar-hide">
+    <aside className="w-full lg:w-80 border-b lg:border-b-0 lg:border-r border-zinc-800 p-6 flex flex-col gap-8 shrink-0 h-auto lg:h-screen font-mono overflow-y-auto scrollbar-hide">
       <div className="space-y-1">
-        <h1 className="text-xl font-black italic tracking-tighter">STAT-STATS</h1>
-        <p className="text-[10px] text-zinc-500 italic">// v3.1.2-stable.stealth</p>
-
-
+        <h1 className="text-xl font-black italic tracking-tighter">
+          STAT-STATS
+        </h1>
+        <p className="text-[10px] text-zinc-500 italic">
+          {"//"} v3.1.2-stable.stealth
+        </p>
       </div>
 
       <div className="space-y-6">
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">01. Target User</label>
-          <input 
-            type="text" 
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            01. Target User
+          </label>
+          <input
+            type="text"
             value={config.username}
             onChange={(e) => setConfig({ ...config, username: e.target.value })}
-            placeholder="GitHub Username" 
-            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700" 
+            placeholder="GitHub Username"
+            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">02. Visual Theme</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            02. Visual Theme
+          </label>
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(themes).map(([key, value]) => (
-              <button 
+              <button
                 key={key}
                 onClick={() => setConfig({ ...config, theme: key })}
-                className={`group border p-2 text-[10px] uppercase font-bold transition-all flex items-center gap-2 ${config.theme === key ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+                className={`group border p-2 text-[10px] uppercase font-bold transition-all flex items-center gap-2 ${config.theme === key ? "border-zinc-100 text-zinc-100 bg-zinc-800" : "border-zinc-800 text-zinc-600 hover:border-zinc-400"}`}
               >
-                <div 
-                  className="w-3 h-3 rounded-full border border-zinc-700 shrink-0 transition-transform group-hover:scale-110" 
+                <div
+                  className="w-3 h-3 rounded-full border border-zinc-700 shrink-0 transition-transform group-hover:scale-110"
                   style={{ backgroundColor: `#${value.bg_color}` }}
                 >
-                  <div 
-                    className="w-full h-full rounded-full opacity-50" 
-                    style={{ backgroundColor: `#${value.title_color}`, clipPath: 'polygon(0 0, 100% 0, 100% 100%)' }}
+                  <div
+                    className="w-full h-full rounded-full opacity-50"
+                    style={{
+                      backgroundColor: `#${value.title_color}`,
+                      clipPath: "polygon(0 0, 100% 0, 100% 100%)",
+                    }}
                   />
                 </div>
-                <span className="truncate">{key.replace('_', ' ')}</span>
+                <span className="truncate">{key.replace("_", " ")}</span>
               </button>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">03. Language</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            03. Language
+          </label>
           <div className="grid grid-cols-5 gap-1">
-            {['en', 'fr', 'es', 'de', 'jp'].map(l => (
-              <button 
+            {["en", "fr", "es", "de", "jp"].map((l) => (
+              <button
                 key={l}
                 onClick={() => setConfig({ ...config, locale: l })}
-                className={`border py-1.5 text-[10px] uppercase font-black transition-all ${config.locale === l ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+                className={`border py-1.5 text-[10px] uppercase font-black transition-all ${config.locale === l ? "border-zinc-100 text-zinc-100 bg-zinc-800" : "border-zinc-800 text-zinc-600 hover:border-zinc-400"}`}
               >
                 {l}
               </button>
@@ -77,36 +89,46 @@ export default function Sidebar({ config, setConfig }: any) {
         </div>
 
         <div className="space-y-3">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">04. Card Settings</label>
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            04. Card Settings
+          </label>
           <div className="space-y-2">
-            <button 
+            <button
               onClick={() => setConfig({ ...config, compact: !config.compact })}
-              className={`w-full border p-2 text-[10px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.compact ? 'border-zinc-100 text-zinc-100 bg-zinc-800' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+              className={`w-full border p-2 text-[10px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.compact ? "border-zinc-100 text-zinc-100 bg-zinc-800" : "border-zinc-800 text-zinc-600 hover:border-zinc-400"}`}
             >
               Compact Mode
-              <span className={config.compact ? 'text-emerald-400' : 'text-zinc-800'}>{config.compact ? '[ON]' : '[OFF]'}</span>
+              <span
+                className={
+                  config.compact ? "text-emerald-400" : "text-zinc-800"
+                }
+              >
+                {config.compact ? "[ON]" : "[OFF]"}
+              </span>
             </button>
-            
+
             <div className="grid grid-cols-1 gap-1 pt-1">
               {[
-                { id: 'stars', label: 'Hide Stars' },
-                { id: 'commits', label: 'Hide Commits' },
-                { id: 'prs', label: 'Hide PRs' },
-                { id: 'issues', label: 'Hide Issues' },
-                { id: 'contribs', label: 'Hide Contribs' }
-              ].map(s => (
-                <button 
+                { id: "stars", label: "Hide Stars" },
+                { id: "commits", label: "Hide Commits" },
+                { id: "prs", label: "Hide PRs" },
+                { id: "issues", label: "Hide Issues" },
+                { id: "contribs", label: "Hide Contribs" },
+              ].map((s) => (
+                <button
                   key={s.id}
                   onClick={() => {
-                    const newHide = config.hide.includes(s.id) 
+                    const newHide = config.hide.includes(s.id)
                       ? config.hide.filter((h: string) => h !== s.id)
                       : [...config.hide, s.id];
                     setConfig({ ...config, hide: newHide });
                   }}
-                  className={`border px-2 py-1.5 text-[9px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.hide.includes(s.id) ? 'border-red-900/50 text-red-400 bg-red-950/10' : 'border-zinc-800 text-zinc-600 hover:border-zinc-400'}`}
+                  className={`border px-2 py-1.5 text-[9px] uppercase font-bold transition-all text-left flex justify-between items-center ${config.hide.includes(s.id) ? "border-red-900/50 text-red-400 bg-red-950/10" : "border-zinc-800 text-zinc-600 hover:border-zinc-400"}`}
                 >
                   {s.label}
-                  {config.hide.includes(s.id) && <span className="text-[8px] opacity-50">HIDDEN</span>}
+                  {config.hide.includes(s.id) && (
+                    <span className="text-[8px] opacity-50">HIDDEN</span>
+                  )}
                 </button>
               ))}
             </div>
@@ -114,75 +136,106 @@ export default function Sidebar({ config, setConfig }: any) {
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">05. Custom Design (CSS)</label>
-          <textarea 
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            05. Custom Design (CSS)
+          </label>
+          <textarea
             value={config.customCSS}
-            onChange={(e) => setConfig({ ...config, customCSS: e.target.value })}
-            placeholder=".header { fill: red; }" 
+            onChange={(e) =>
+              setConfig({ ...config, customCSS: e.target.value })
+            }
+            placeholder=".header { fill: red; }"
             className="w-full h-24 bg-zinc-900 border border-zinc-800 p-3 text-[10px] focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700 font-mono resize-none"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">06. Typography (Google Font)</label>
-          <select 
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            06. Typography (Google Font)
+          </label>
+          <select
             value={config.font}
             onChange={(e) => setConfig({ ...config, font: e.target.value })}
             className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all"
           >
             <option value="">Default (Segoe UI)</option>
-            {["Inter", "Roboto", "Open Sans", "Montserrat", "JetBrains Mono", "Fira Code", "Ubuntu", "Press Start 2P", "Playfair Display", "Inconsolata"].map(f => (
-              <option key={f} value={f}>{f}</option>
+            {[
+              "Inter",
+              "Roboto",
+              "Open Sans",
+              "Montserrat",
+              "JetBrains Mono",
+              "Fira Code",
+              "Ubuntu",
+              "Press Start 2P",
+              "Playfair Display",
+              "Inconsolata",
+            ].map((f) => (
+              <option key={f} value={f}>
+                {f}
+              </option>
             ))}
           </select>
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">07. Target Organization</label>
-          <input 
-            type="text" 
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            07. Target Organization
+          </label>
+          <input
+            type="text"
             value={config.org}
             onChange={(e) => setConfig({ ...config, org: e.target.value })}
-            placeholder="GitHub Organization" 
-            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700" 
+            placeholder="GitHub Organization"
+            className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all placeholder:text-zinc-700"
           />
         </div>
 
         <div className="space-y-2">
-          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">08. Target Repository</label>
-          <select 
+          <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-bold">
+            08. Target Repository
+          </label>
+          <select
             value={config.repo}
             onChange={(e) => setConfig({ ...config, repo: e.target.value })}
             className="w-full bg-zinc-900 border border-zinc-800 p-3 text-sm focus:border-zinc-100 outline-none transition-all"
           >
-            {repos.map(r => <option key={r} value={r}>{r}</option>)}
+            {repos.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
           </select>
         </div>
       </div>
 
       <div className="mt-auto pt-6 space-y-4 border-t border-zinc-900">
         <div className="grid grid-cols-2 gap-2">
-          <a 
-            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=bug&template=bug_report.md" 
+          <a
+            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=bug&template=bug_report.md"
             target="_blank"
             className="border border-zinc-800 p-2 text-[8px] uppercase font-bold text-zinc-500 hover:text-red-400 hover:border-red-900/50 transition-all text-center"
           >
-            // Report Bug
+            {"//"} Report Bug
           </a>
-          <a 
-            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=enhancement&template=feature_request.md" 
+          <a
+            href="https://github.com/D-Seonay/github-stats-cards/issues/new?labels=enhancement&template=feature_request.md"
             target="_blank"
             className="border border-zinc-800 p-2 text-[8px] uppercase font-bold text-zinc-500 hover:text-emerald-400 hover:border-emerald-900/50 transition-all text-center"
           >
-            // Suggest Idea
+            {"//"} Suggest Idea
           </a>
         </div>
-        
-        <button 
-          onClick={() => document.getElementById('gallery')?.scrollIntoView({ behavior: 'smooth' })}
+
+        <button
+          onClick={() =>
+            document
+              .getElementById("gallery")
+              ?.scrollIntoView({ behavior: "smooth" })
+          }
           className="w-full bg-zinc-100 text-zinc-950 p-3 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all italic"
         >
-          // Open Visual Library
+          {"//"} Open Visual Library
         </button>
       </div>
     </aside>
