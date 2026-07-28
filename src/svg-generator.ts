@@ -1,7 +1,16 @@
-import { ActivityData, GithubData, LanguageData, ProjectData, StreakData, TopRepoData, Trophy, OrgData } from "./github-fetcher";
+import {
+  ActivityData,
+  GithubData,
+  LanguageData,
+  ProjectData,
+  StreakData,
+  TopRepoData,
+  Trophy,
+  OrgData,
+} from "./github-fetcher";
 import { Theme } from "./themes";
 import { Translations } from "./locales";
-import { minifySVG } from "./utils";
+import { minifySVG, formatDateRange } from "./utils";
 
 const COMMON_STYLES = `
   @keyframes fadeIn {
@@ -50,25 +59,32 @@ function getTerminalOverlay(theme: Theme): string {
   return "";
 }
 
-export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: string, font?: string): string {
+export function generateTrophySVG(
+  trophies: Trophy[],
+  theme: Theme,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, bg_color, text_color } = theme;
   const fontStyles = getFontStyles(font);
 
-  const standard = trophies.filter(t => t.rank !== "SECRET");
-  const secrets = trophies.filter(t => t.rank === "SECRET");
+  const standard = trophies.filter((t) => t.rank !== "SECRET");
+  const secrets = trophies.filter((t) => t.rank === "SECRET");
 
   const renderTrophies = (list: Trophy[], startY: number) => {
-    return list.map((t, index) => {
-      const x = (index % 3) * 150;
-      const y = startY + Math.floor(index / 3) * 70;
-      const color = RANK_COLORS[t.rank] || "#333";
-      const delay = 300 + (index * 100);
+    return list
+      .map((t, index) => {
+        const x = (index % 3) * 150;
+        const y = startY + Math.floor(index / 3) * 70;
+        const color = RANK_COLORS[t.rank] || "#333";
+        const delay = 300 + index * 100;
 
-      const iconPath = t.rank === "SECRET" 
-        ? "M20 8 L32 20 L20 32 L8 20 Z" 
-        : "M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z";
+        const iconPath =
+          t.rank === "SECRET"
+            ? "M20 8 L32 20 L20 32 L8 20 Z"
+            : "M20 10 L24 18 L32 18 L26 24 L28 32 L20 28 L12 32 L14 24 L8 18 L16 18 Z";
 
-      return `
+        return `
         <g transform="translate(${x}, ${y})" class="animate" style="animation-delay: ${delay}ms">
           <circle cx="20" cy="20" r="18" fill="${color}" opacity="0.2" />
           <path d="${iconPath}" fill="${color}" />
@@ -76,7 +92,8 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
           <text x="45" y="32" class="stat small" style="fill: #${text_color}">${t.rank} (${t.value})</text>
         </g>
       `;
-    }).join("");
+      })
+      .join("");
   };
 
   const standardContent = renderTrophies(standard, 65);
@@ -113,7 +130,11 @@ export function generateTrophySVG(trophies: Trophy[], theme: Theme, customCSS?: 
   `);
 }
 
-export function generateRateLimitSVG(theme: Theme, customCSS?: string, font?: string): string {
+export function generateRateLimitSVG(
+  theme: Theme,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const fontStyles = getFontStyles(font);
 
@@ -142,20 +163,28 @@ export function generateRateLimitSVG(theme: Theme, customCSS?: string, font?: st
   `);
 }
 
-export function generateActivitySVG(data: ActivityData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
+export function generateActivitySVG(
+  data: ActivityData[],
+  theme: Theme,
+  translations: Translations,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const fontStyles = getFontStyles(font);
 
-  const rows = data.map((activity, index) => {
-    const y = index * 25;
-    return `
+  const rows = data
+    .map((activity, index) => {
+      const y = index * 25;
+      return `
       <g transform="translate(0, ${y})" class="animate">
         <text x="0" y="0" class="stat bold">${activity.type}</text>
         <text x="100" y="0" class="stat">${activity.repo.length > 25 ? activity.repo.substring(0, 22) + "..." : activity.repo}</text>
         <text x="400" y="0" class="stat small text-right" text-anchor="end">${activity.date}</text>
       </g>
     `;
-  }).join("");
+    })
+    .join("");
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -180,14 +209,22 @@ export function generateActivitySVG(data: ActivityData[], theme: Theme, translat
   `);
 }
 
-export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
+export function generateTopReposSVG(
+  data: TopRepoData[],
+  theme: Theme,
+  translations: Translations,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const fontStyles = getFontStyles(font);
 
-  const rows = data.map((repo, index) => {
-    const y = index * 25;
-    const truncatedName = repo.name.length > 18 ? repo.name.substring(0, 15) + "..." : repo.name;
-    return `
+  const rows = data
+    .map((repo, index) => {
+      const y = index * 25;
+      const truncatedName =
+        repo.name.length > 18 ? repo.name.substring(0, 15) + "..." : repo.name;
+      return `
       <g transform="translate(0, ${y})" class="animate">
         <text x="0" y="0" class="stat bold">${truncatedName}</text>
         <g transform="translate(200, 0)">
@@ -198,7 +235,8 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
         <text x="400" y="0" class="stat small">🍴 ${repo.forks}</text>
       </g>
     `;
-  }).join("");
+    })
+    .join("");
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -223,9 +261,33 @@ export function generateTopReposSVG(data: TopRepoData[], theme: Theme, translati
   `);
 }
 
-export function generateStreakSVG(data: StreakData, theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
-  const { title_color, text_color, bg_color } = theme;
+export function calculateStreakRingPercent(
+  current: number,
+  longest: number,
+): number {
+  if (longest <= 0) return 0;
+  return Math.min(current / longest, 1);
+}
+
+export function generateStreakSVG(
+  data: StreakData,
+  theme: Theme,
+  translations: Translations,
+  customCSS?: string,
+  font?: string,
+  locale: string = "en",
+): string {
+  const { title_color, text_color, bg_color, icon_color } = theme;
   const fontStyles = getFontStyles(font);
+  const dateRange = formatDateRange(data.startDate, data.endDate, locale);
+
+  const radius = 48;
+  const circumference = 2 * Math.PI * radius;
+  const percent = calculateStreakRingPercent(
+    data.currentStreak,
+    data.longestStreak,
+  );
+  const dashLength = circumference * percent;
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -233,65 +295,98 @@ export function generateStreakSVG(data: StreakData, theme: Theme, translations: 
         ${fontStyles.import}
         ${COMMON_STYLES}
         * { font-family: ${fontStyles.family}; }
-        .header { font-weight: 600; font-size: 18px; fill: #${title_color}; }
-        .stat { font-weight: 400; font-size: 14px; fill: #${text_color}; }
-        .bold { font-weight: 700; font-size: 24px; fill: #${title_color}; }
-        .label { font-weight: 400; font-size: 12px; fill: #${text_color}; opacity: 0.8; }
+        .header { font-weight: 600; font-size: 16px; fill: #${title_color}; text-anchor: middle; }
+        .subtitle { font-size: 10px; fill: #${text_color}; opacity: 0.55; text-anchor: middle; }
+        .ring-value { font-weight: 700; font-size: 30px; fill: #${title_color}; text-anchor: middle; }
+        .ring-label { font-size: 10px; fill: #${text_color}; opacity: 0.7; text-anchor: middle; }
+        .stat-value { font-weight: 700; font-size: 24px; fill: #${title_color}; }
+        .stat-label { font-size: 11px; fill: #${text_color}; opacity: 0.7; }
         ${customCSS || ""}
       </style>
       <rect x="0.5" y="0.5" width="494" height="194" rx="4.5" fill="#${bg_color}" stroke="#E4E2E2"/>
-      <text x="25" y="35" class="header animate">${translations.streakTitle}</text>
-      
-      <g transform="translate(25, 80)">
-        <g transform="translate(0, 0)" class="animate">
-          <text x="0" y="0" class="bold">${data.currentStreak}</text>
-          <text x="0" y="20" class="label">${translations.currentStreak}</text>
-        </g>
-        <g transform="translate(160, 0)" class="animate">
-          <text x="0" y="0" class="bold">${data.longestStreak}</text>
-          <text x="0" y="20" class="label">${translations.longestStreak}</text>
-        </g>
-        <g transform="translate(320, 0)" class="animate">
-          <text x="0" y="0" class="bold">${data.totalContributions}</text>
-          <text x="0" y="20" class="label">${translations.totalContributions}</text>
-        </g>
+      <text x="247.5" y="28" class="header animate">${translations.streakTitle}</text>
+      <text x="247.5" y="43" class="subtitle animate" style="animation-delay: 150ms">${dateRange}</text>
+
+      <g transform="translate(112, 128)" class="animate" style="animation-delay: 300ms">
+        <circle r="${radius}" fill="none" stroke="#${text_color}" stroke-opacity="0.15" stroke-width="7"/>
+        <circle r="${radius}" fill="none" stroke="#${icon_color}" stroke-width="7"
+          stroke-dasharray="${dashLength} ${circumference}" stroke-linecap="round" transform="rotate(-90)"/>
+        <text y="6" class="ring-value">${data.currentStreak}</text>
+        <text y="24" class="ring-label">${translations.currentStreak}</text>
+      </g>
+
+      <g transform="translate(112, 80)" class="animate" style="animation-delay: 400ms">
+        <circle r="13" fill="#${bg_color}" stroke="#${icon_color}" stroke-width="2"/>
+        <text y="4" text-anchor="middle" font-size="13">🔥</text>
+      </g>
+
+      <line x1="196" y1="62" x2="196" y2="178" stroke="#E4E2E2"/>
+
+      <g transform="translate(226, 100)" class="animate" style="animation-delay: 450ms">
+        <text class="stat-value">${data.longestStreak}</text>
+        <text y="20" class="stat-label">${translations.longestStreak}</text>
+      </g>
+      <g transform="translate(226, 155)" class="animate" style="animation-delay: 600ms">
+        <text class="stat-value">${data.totalContributions}</text>
+        <text y="20" class="stat-label">${translations.totalContributions}</text>
       </g>
       ${getTerminalOverlay(theme)}
     </svg>
   `);
 }
 
-export function generateStatsSVG(data: GithubData, theme: Theme, translations: Translations, hide: string[] = [], compact: boolean = false, customCSS?: string, font?: string): string {
+export function generateStatsSVG(
+  data: GithubData,
+  theme: Theme,
+  translations: Translations,
+  hide: string[] = [],
+  compact: boolean = false,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const title = translations.statsTitle.replace("{name}", data.name);
   const fontStyles = getFontStyles(font);
 
   const stats = [
     { key: "stars", label: translations.totalStars, value: data.totalStars },
-    { key: "commits", label: translations.totalCommits, value: data.totalCommits },
+    {
+      key: "commits",
+      label: translations.totalCommits,
+      value: data.totalCommits,
+    },
     { key: "prs", label: translations.totalPRs, value: data.totalPRs },
     { key: "issues", label: translations.totalIssues, value: data.totalIssues },
-    { key: "contribs", label: translations.contributedTo, value: data.contributedTo },
+    {
+      key: "contribs",
+      label: translations.contributedTo,
+      value: data.contributedTo,
+    },
     { key: "followers", label: translations.followers, value: data.followers },
     { key: "gists", label: translations.gists, value: data.gists },
-  ].filter(s => !hide.includes(s.key));
+  ].filter((s) => !hide.includes(s.key));
 
   const headerHeight = 65;
   const rowHeight = 25;
   const paddingBottom = 30;
   const minHeight = 195;
-  
-  const calculatedHeight = headerHeight + (stats.length * rowHeight) + paddingBottom;
-  const height = compact ? Math.max(100, calculatedHeight - 40) : Math.max(minHeight, calculatedHeight);
 
-  const rows = stats.map((stat, index) => {
-    const y = index * rowHeight;
-    return `
+  const calculatedHeight =
+    headerHeight + stats.length * rowHeight + paddingBottom;
+  const height = compact
+    ? Math.max(100, calculatedHeight - 40)
+    : Math.max(minHeight, calculatedHeight);
+
+  const rows = stats
+    .map((stat, index) => {
+      const y = index * rowHeight;
+      return `
       <text x="0" y="${y}" class="stat animate" style="animation-delay: ${300 + index * 100}ms">
         ${stat.label} <tspan x="180" class="bold">${stat.value}</tspan>
       </text>
     `;
-  }).join("");
+    })
+    .join("");
 
   return minifySVG(`
     <svg width="495" height="${height}" viewBox="0 0 495 ${height}" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -315,7 +410,13 @@ export function generateStatsSVG(data: GithubData, theme: Theme, translations: T
   `);
 }
 
-export function generateLanguagesSVG(data: LanguageData[], theme: Theme, translations: Translations, customCSS?: string, font?: string): string {
+export function generateLanguagesSVG(
+  data: LanguageData[],
+  theme: Theme,
+  translations: Translations,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const totalSize = data.reduce((acc, lang) => acc + lang.size, 0);
   const fontStyles = getFontStyles(font);
@@ -323,24 +424,28 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   let currentX = 0;
   const barWidth = 445;
   const barHeight = 8;
-  const bars = data.map((lang, index) => {
-    const width = (lang.size / totalSize) * barWidth;
-    const rect = `<rect x="${currentX}" y="0" width="${width}" height="${barHeight}" fill="${lang.color}"/>`;
-    currentX += width;
-    return rect;
-  }).join("");
+  const bars = data
+    .map((lang, index) => {
+      const width = (lang.size / totalSize) * barWidth;
+      const rect = `<rect x="${currentX}" y="0" width="${width}" height="${barHeight}" fill="${lang.color}"/>`;
+      currentX += width;
+      return rect;
+    })
+    .join("");
 
-  const legend = data.map((lang, index) => {
-    const percentage = ((lang.size / totalSize) * 100).toFixed(1);
-    const y = index * 20;
-    const delay = 450 + (index * 100);
-    return `
+  const legend = data
+    .map((lang, index) => {
+      const percentage = ((lang.size / totalSize) * 100).toFixed(1);
+      const y = index * 20;
+      const delay = 450 + index * 100;
+      return `
       <g transform="translate(0, ${y})" class="animate" style="animation-delay: ${delay}ms">
         <circle cx="5" cy="5" r="5" fill="${lang.color}"/>
         <text x="20" y="10" class="stat">${lang.name} <tspan class="bold">${percentage}%</tspan></text>
       </g>
     `;
-  }).join("");
+    })
+    .join("");
 
   return minifySVG(`
     <svg width="495" height="195" viewBox="0 0 495 195" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -373,7 +478,12 @@ export function generateLanguagesSVG(data: LanguageData[], theme: Theme, transla
   `);
 }
 
-export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: string, font?: string): string {
+export function generateProjectSVG(
+  data: ProjectData,
+  theme: Theme,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const fontStyles = getFontStyles(font);
 
@@ -409,7 +519,12 @@ export function generateProjectSVG(data: ProjectData, theme: Theme, customCSS?: 
   `);
 }
 
-export function generateOrgStatsSVG(data: OrgData, theme: Theme, customCSS?: string, font?: string): string {
+export function generateOrgStatsSVG(
+  data: OrgData,
+  theme: Theme,
+  customCSS?: string,
+  font?: string,
+): string {
   const { title_color, text_color, bg_color } = theme;
   const fontStyles = getFontStyles(font);
 
