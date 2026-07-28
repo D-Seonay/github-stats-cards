@@ -1,5 +1,9 @@
 import { fetchStreak, RateLimitError } from "@/src/github-fetcher";
-import { generateStreakSVG, generateErrorSVG, generateRateLimitSVG } from "@/src/svg-generator";
+import {
+  generateStreakSVG,
+  generateErrorSVG,
+  generateRateLimitSVG,
+} from "@/src/svg-generator";
 import { getTheme } from "@/src/themes";
 import { getTranslations } from "@/src/locales";
 import { NextRequest, NextResponse } from "next/server";
@@ -25,20 +29,31 @@ export async function GET(request: NextRequest) {
   try {
     const data = await fetchStreak(username);
     const translations = getTranslations(locale || "en");
-    const svg = generateStreakSVG(data, themeObj, translations, custom_css, font);
+    const svg = generateStreakSVG(
+      data,
+      themeObj,
+      translations,
+      custom_css,
+      font,
+      locale || "en",
+    );
 
     return new NextResponse(svg, {
       status: 200,
       headers: {
         "Content-Type": "image/svg+xml",
-        "Cache-Control": "public, max-age=7200, s-maxage=86400, stale-while-revalidate=86400",
+        "Cache-Control":
+          "public, max-age=7200, s-maxage=86400, stale-while-revalidate=86400",
       },
     });
   } catch (error: any) {
     if (error instanceof RateLimitError) {
       return new NextResponse(generateRateLimitSVG(themeObj), {
         status: 403,
-        headers: { "Content-Type": "image/svg+xml", "Cache-Control": "no-store" },
+        headers: {
+          "Content-Type": "image/svg+xml",
+          "Cache-Control": "no-store",
+        },
       });
     }
     return new NextResponse(generateErrorSVG(error.message), {
