@@ -359,13 +359,16 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     }
   }
 
+  const lastDay =
+    chronologicalDays[chronologicalDays.length - 1]?.date ?? todayStr;
+
   return {
     name: user.name || user.login,
     currentStreak,
     longestStreak,
     totalContributions: calendar.totalContributions,
     startDate: chronologicalDays[0]?.date ?? todayStr,
-    endDate: chronologicalDays[chronologicalDays.length - 1]?.date ?? todayStr,
+    endDate: lastDay <= todayStr ? lastDay : todayStr,
   };
 }
 
