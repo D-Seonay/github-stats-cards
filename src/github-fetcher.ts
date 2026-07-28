@@ -31,6 +31,8 @@ export interface StreakData {
   currentStreak: number;
   longestStreak: number;
   totalContributions: number;
+  startDate: string;
+  endDate: string;
 }
 
 export interface TopRepoData {
@@ -64,7 +66,11 @@ export interface Trophy {
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
-export function calculateTrophies(data: GithubData, activity: ActivityData[] = [], streak: StreakData | null = null): Trophy[] {
+export function calculateTrophies(
+  data: GithubData,
+  activity: ActivityData[] = [],
+  streak: StreakData | null = null,
+): Trophy[] {
   const tiers = {
     stars: [10, 50, 100, 500, 1000],
     commits: [100, 500, 1000, 5000, 10000],
@@ -82,15 +88,35 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
   };
 
   const trophies: Trophy[] = [
-    { title: "Stars", value: data.totalStars, rank: getRank(data.totalStars, tiers.stars) },
-    { title: "Commits", value: data.totalCommits, rank: getRank(data.totalCommits, tiers.commits) },
-    { title: "PRs", value: data.totalPRs, rank: getRank(data.totalPRs, tiers.prs) },
-    { title: "Issues", value: data.totalIssues, rank: getRank(data.totalIssues, tiers.issues) },
-    { title: "Contribs", value: data.contributedTo, rank: getRank(data.contributedTo, tiers.contribs) },
+    {
+      title: "Stars",
+      value: data.totalStars,
+      rank: getRank(data.totalStars, tiers.stars),
+    },
+    {
+      title: "Commits",
+      value: data.totalCommits,
+      rank: getRank(data.totalCommits, tiers.commits),
+    },
+    {
+      title: "PRs",
+      value: data.totalPRs,
+      rank: getRank(data.totalPRs, tiers.prs),
+    },
+    {
+      title: "Issues",
+      value: data.totalIssues,
+      rank: getRank(data.totalIssues, tiers.issues),
+    },
+    {
+      title: "Contribs",
+      value: data.contributedTo,
+      rank: getRank(data.contributedTo, tiers.contribs),
+    },
   ];
 
   // --- Secret Trophies (Hard to Impossible) ---
-  
+
   if (data.totalStars > 50 && data.followers < 5) {
     trophies.push({ title: "Ghost", value: "Rare", rank: "SECRET" });
   }
@@ -108,11 +134,19 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
   }
 
   if (data.totalStars >= 10000) {
-    trophies.push({ title: "Starlight Legend", value: "Mythic", rank: "SECRET" });
+    trophies.push({
+      title: "Starlight Legend",
+      value: "Mythic",
+      rank: "SECRET",
+    });
   }
 
   if (data.totalStars >= 50000) {
-    trophies.push({ title: "Starlight God", value: "Ethereal", rank: "SECRET" });
+    trophies.push({
+      title: "Starlight God",
+      value: "Ethereal",
+      rank: "SECRET",
+    });
   }
 
   if (data.totalCommits >= 50000) {
@@ -120,7 +154,11 @@ export function calculateTrophies(data: GithubData, activity: ActivityData[] = [
   }
 
   if (data.totalCommits >= 100000) {
-    trophies.push({ title: "Commit Deity", value: "Transcendent", rank: "SECRET" });
+    trophies.push({
+      title: "Commit Deity",
+      value: "Transcendent",
+      rank: "SECRET",
+    });
   }
 
   if (data.contributedTo >= 500) {
@@ -151,7 +189,12 @@ async function githubFetch(url: string, options: any) {
 
 function handleGqlErrors(body: any, dataKey: string) {
   if (body.errors && !body.data?.[dataKey]) {
-    if (body.errors.some((e: any) => e.type === "RATE_LIMITED" || e.message?.includes("rate limit"))) {
+    if (
+      body.errors.some(
+        (e: any) =>
+          e.type === "RATE_LIMITED" || e.message?.includes("rate limit"),
+      )
+    ) {
       throw new RateLimitError();
     }
     throw new Error(body.errors[0].message);
@@ -161,21 +204,26 @@ function handleGqlErrors(body: any, dataKey: string) {
   return data;
 }
 
-export async function fetchRecentActivity(username: string): Promise<ActivityData[]> {
-  const response = await githubFetch(`https://api.github.com/users/${username}/events/public?per_page=5`, {
-    headers: {
-      Authorization: `bearer ${process.env.GH_TOKEN}`,
-      "Content-Type": "application/json",
+export async function fetchRecentActivity(
+  username: string,
+): Promise<ActivityData[]> {
+  const response = await githubFetch(
+    `https://api.github.com/users/${username}/events/public?per_page=5`,
+    {
+      headers: {
+        Authorization: `bearer ${process.env.GH_TOKEN}`,
+        "Content-Type": "application/json",
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     throw new Error("Error fetching recent activity");
   }
 
-  const events = await response.json() as any[];
-  
-  return events.map(event => {
+  const events = (await response.json()) as any[];
+
+  return events.map((event) => {
     let type = event.type.replace("Event", "");
     if (type === "Push") type = "Pushed to";
     if (type === "PullRequest") type = "Opened PR in";
@@ -186,7 +234,10 @@ export async function fetchRecentActivity(username: string): Promise<ActivityDat
     return {
       type,
       repo: event.repo.name.split("/")[1] || event.repo.name,
-      date: new Date(event.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+      date: new Date(event.created_at).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
     };
   });
 }
@@ -266,19 +317,21 @@ export async function fetchStreak(username: string): Promise<StreakData> {
 
   const calendar = user.contributionsCollection.contributionCalendar;
   const days = calendar.weeks.flatMap((w: any) => w.contributionDays);
-  
-  const todayStr = new Date().toISOString().split('T')[0];
+
+  const todayStr = new Date().toISOString().split("T")[0];
   const yesterday = new Date();
   yesterday.setDate(yesterday.getDate() - 1);
-  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  const yesterdayStr = yesterday.toISOString().split("T")[0];
 
   const sortedPastDays = days
     .filter((d: any) => d.date <= todayStr)
     .sort((a: any, b: any) => b.date.localeCompare(a.date));
 
   let currentStreak = 0;
-  const latestContributionIndex = sortedPastDays.findIndex((d: any) => d.contributionCount > 0);
-  
+  const latestContributionIndex = sortedPastDays.findIndex(
+    (d: any) => d.contributionCount > 0,
+  );
+
   if (latestContributionIndex !== -1) {
     const latestDate = sortedPastDays[latestContributionIndex].date;
     if (latestDate === todayStr || latestDate === yesterdayStr) {
@@ -292,7 +345,9 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     }
   }
 
-  const chronologicalDays = [...days].sort((a: any, b: any) => a.date.localeCompare(b.date));
+  const chronologicalDays = [...days].sort((a: any, b: any) =>
+    a.date.localeCompare(b.date),
+  );
   let longestStreak = 0;
   let tempStreak = 0;
   for (const day of chronologicalDays) {
@@ -309,10 +364,15 @@ export async function fetchStreak(username: string): Promise<StreakData> {
     currentStreak,
     longestStreak,
     totalContributions: calendar.totalContributions,
+    startDate: chronologicalDays[0]?.date ?? todayStr,
+    endDate: chronologicalDays[chronologicalDays.length - 1]?.date ?? todayStr,
   };
 }
 
-export async function fetchProject(owner: string, name: string): Promise<ProjectData> {
+export async function fetchProject(
+  owner: string,
+  name: string,
+): Promise<ProjectData> {
   const query = `
     query repoInfo($owner: String!, $name: String!) {
       repository(owner: $owner, name: $name) {
@@ -382,13 +442,18 @@ export async function fetchStats(username: string): Promise<GithubData> {
   const body = await response.json();
   const user = handleGqlErrors(body, "user");
 
-  const totalStars = user.repositories.nodes.reduce((acc: number, repo: any) => acc + repo.stargazers.totalCount, 0);
+  const totalStars = user.repositories.nodes.reduce(
+    (acc: number, repo: any) => acc + repo.stargazers.totalCount,
+    0,
+  );
 
   return {
     name: user.name || user.login,
     login: user.login,
     totalStars,
-    totalCommits: user.contributionsCollection.totalCommitContributions + user.contributionsCollection.restrictedContributionsCount,
+    totalCommits:
+      user.contributionsCollection.totalCommitContributions +
+      user.contributionsCollection.restrictedContributionsCount,
     totalPRs: user.pullRequests.totalCount,
     totalIssues: user.issues.totalCount,
     totalRepos: user.repositories.totalCount,
@@ -398,7 +463,9 @@ export async function fetchStats(username: string): Promise<GithubData> {
   };
 }
 
-export async function fetchTopLanguages(username: string): Promise<LanguageData[]> {
+export async function fetchTopLanguages(
+  username: string,
+): Promise<LanguageData[]> {
   const query = `
     query userInfo($login: String!) {
       user(login: $login) {
@@ -432,11 +499,15 @@ export async function fetchTopLanguages(username: string): Promise<LanguageData[
   user.repositories.nodes.forEach((repo: any) => {
     repo.languages.edges.forEach((edge: any) => {
       if (langMap[edge.node.name]) langMap[edge.node.name].size += edge.size;
-      else langMap[edge.node.name] = { size: edge.size, color: edge.node.color };
+      else
+        langMap[edge.node.name] = { size: edge.size, color: edge.node.color };
     });
   });
 
-  return Object.entries(langMap).map(([name, data]) => ({ name, ...data })).sort((a, b) => b.size - a.size).slice(0, 5);
+  return Object.entries(langMap)
+    .map(([name, data]) => ({ name, ...data }))
+    .sort((a, b) => b.size - a.size)
+    .slice(0, 5);
 }
 
 export async function fetchOrgStats(org: string): Promise<OrgData> {
@@ -469,7 +540,10 @@ export async function fetchOrgStats(org: string): Promise<OrgData> {
   const body = await response.json();
   const organization = handleGqlErrors(body, "organization");
 
-  const totalStars = organization.repositories.nodes.reduce((acc: number, repo: any) => acc + repo.stargazerCount, 0);
+  const totalStars = organization.repositories.nodes.reduce(
+    (acc: number, repo: any) => acc + repo.stargazerCount,
+    0,
+  );
 
   return {
     name: organization.name || organization.login,
