@@ -82,6 +82,12 @@ describe("generateStreakSVG", () => {
     expect(svg).toContain(`#${themes.dracula.icon_color}`);
   });
 
+  it("renders the ring background track with the expected stroke and opacity", () => {
+    const svg = generateStreakSVG(mockStreak, themes.dracula, locales.en);
+    expect(svg).toContain(`stroke="#${themes.dracula.text_color}"`);
+    expect(svg).toContain('stroke-opacity="0.15"');
+  });
+
   it("renders a localized date range subtitle", () => {
     const svg = generateStreakSVG(
       mockStreak,
